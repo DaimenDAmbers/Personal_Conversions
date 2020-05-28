@@ -19,7 +19,6 @@ struct CreateView: View {
     @State var fromValue: String = ""
     @State var toValue: String = ""
     @Binding var saveForm: Bool // If true, save method will run in parent function
-    @State var keyboardHeight: CGFloat = 0
     @State var value: CGFloat = 0
     
     let lowLimit: Float = -1_000
@@ -35,7 +34,7 @@ struct CreateView: View {
                 Button("Done") {
                     self.hideKeyboard()
                 }
-                // MARK: To & From
+                // MARK: - To & From
                 Section(header: Text("What are you converting?")) {
                     HStack {
                         TextField("From", text: $fromValue)
@@ -45,7 +44,7 @@ struct CreateView: View {
                     }
                 }
                 
-                // MARK: Conversion Operator
+                // MARK: - Conversion Operator
                 // Conversion will always be a multiple of the original input
                 Section(header: Text("Operator")) {
                     Picker(selection: $operation, label: Text("Operation")) {
@@ -56,7 +55,7 @@ struct CreateView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 }
                 
-                
+                // MARK: - Stepper and Text Field
 //                if(!fromValue.isEmpty && !toValue.isEmpty) {
                     Section(header: Text("Using \(operations[operation].rawValue), how many \(fromValue.lowercased()) makes one \(toValue.lowercased())?")) {
                         HStack {
@@ -68,7 +67,7 @@ struct CreateView: View {
                             Stepper(value: $factor, in: lowLimit...highLimit, step: 10.0) {
                                 Text("\(factor, specifier: "%.2f")")
                             }
-//                            .labelsHidden()
+                            .labelsHidden()
                         }
                     }
 //                }
@@ -101,8 +100,8 @@ struct CreateView: View {
                         Spacer()
                     }
                 }
-//                .onAppear(perform: {self.raiseKeyboard()})
             }
+            .keyboardAdaptive()
             .navigationBarTitle(Text("New Conversion"))
         }
         
@@ -143,6 +142,25 @@ struct CreateView: View {
         }
     }
 }
+
+//extension Publishers {
+//    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+//        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
+//        .map { $0.keyboardHeight }
+//
+//        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
+//            .map { _ in CGFloat(0) }
+//
+//        return MergeMany(willShow, willHide)
+//        .eraseToAnyPublisher()
+//    }
+//}
+//
+//extension Notification {
+//    var keyboardHeight: CGFloat {
+//        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
+//    }
+//}
 
 #if canImport(UIKit)
 extension View {

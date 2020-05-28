@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 
 /// Showes the detail of the selected personal conversion
@@ -16,6 +17,7 @@ struct DetailView: View {
     var operations: [Operations] = [.add, .subtract, .divide, .multiply]
     @State private var fromValue: Float = 0
     @State private var toValue: Float = 0
+    @State private var keyboardHeight: CGFloat = 0
     var conversion: Conversion
 //    init() {
 //        UITableView.appearance().tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: Double.leastNonzeroMagnitude))
@@ -56,6 +58,7 @@ struct DetailView: View {
                     self.hideKeyboard()
                 }
             }
+            .keyboardAdaptive()
         }
         .navigationBarTitle(Text("\(conversion.title)"), displayMode: .inline)
         .navigationBarItems(trailing:
@@ -98,6 +101,8 @@ struct DetailView: View {
         return output
     }
 }
+
+
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
