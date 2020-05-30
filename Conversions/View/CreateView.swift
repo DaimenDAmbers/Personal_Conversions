@@ -12,15 +12,15 @@ import Combine
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
-    var operations: [Operations] = [.multiply, .divide]
     @State var title: String = ""
     @State var operation: Int = 0
-    @State var factor: Float = 0
+    @State var factor: Array<Float> = [0.00, 1.00]
     @State var fromValue: String = ""
-    @State var toValue: String = ""
-    @Binding var saveForm: Bool // If true, save method will run in parent function
+    @State var toValue: [String] = ["", ""]
     @State var value: CGFloat = 0
+    @Binding var saveForm: Bool // If true, save method will run in parent function
     
+    var operations: [Operations] = [.multiply, .divide]
     let lowLimit: Float = -1_000
     let highLimit: Float = 1_000
     
@@ -31,18 +31,48 @@ struct CreateView: View {
                 // MARK: Conversion Name
                 TextField("Conversion name", text: $title)
                     .disableAutocorrection(true)
-                Button("Done") {
-                    self.hideKeyboard()
-                }
+                
                 // MARK: - To & From
-                Section(header: Text("What are you converting?")) {
-                    HStack {
-                        TextField("From", text: $fromValue)
-                            .disableAutocorrection(true)
-                        TextField("To", text: $toValue)
-                            .disableAutocorrection(true)
-                    }
+                Section(header: Text("What value are you converting from?")) {
+                    TextField("From", text: $fromValue)
+                        .disableAutocorrection(true)
                 }
+                
+                
+                    Section(header: Button(action: {
+                        // Information
+                    }) {
+                        Text("What value(s) are you converting to?")
+                            .foregroundColor(.secondary)
+                        Image(systemName: "info.circle")
+                    }) {
+                        VStack {
+                            HStack {
+                                TextField("Value", text: $toValue[0])
+                                    .disableAutocorrection(true)
+                                    .multilineTextAlignment(.center)
+                                Stepper(value: $factor[0], in: lowLimit...highLimit) {
+                                    Text("\(factor[0], specifier: "%.2f")")
+                                }
+                            }
+                            // Will need to programatically add a new row on button click
+                            HStack {
+                                TextField("Value", text: $toValue[1])
+                                    .disableAutocorrection(true)
+                                    .multilineTextAlignment(.center)
+                                
+                                Stepper(value: $factor[1], in: lowLimit...highLimit) {
+                                    Text("\(factor[1], specifier: "%.2f")")
+                                }
+                            }
+                            
+                            Button(action: {
+                                // TODO: Action for adding a new row
+                            }) {
+                                Text("Add Row")
+                            }
+                        }
+                    }
                 
                 // MARK: - Conversion Operator
                 // Conversion will always be a multiple of the original input
@@ -52,25 +82,25 @@ struct CreateView: View {
                             Text("\(self.operations[index].rawValue)")
                         }
                     }
-                .pickerStyle(SegmentedPickerStyle())
+                    .pickerStyle(SegmentedPickerStyle())
                 }
                 
                 // MARK: - Stepper and Text Field
-//                if(!fromValue.isEmpty && !toValue.isEmpty) {
-                    Section(header: Text("Using \(operations[operation].rawValue), how many \(fromValue.lowercased()) makes one \(toValue.lowercased())?")) {
-                        HStack {
-                            
-                            TextField("Conversion factor", value: $factor, formatter: NumberFormatter())
-                                .multilineTextAlignment(.center)
-                                .keyboardType(.decimalPad)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            Stepper(value: $factor, in: lowLimit...highLimit, step: 10.0) {
-                                Text("\(factor, specifier: "%.2f")")
-                            }
-                            .labelsHidden()
-                        }
-                    }
+                //                if(!fromValue.isEmpty && !toValue.isEmpty) {
+//                Section(header: Text("Using \(operations[operation].rawValue), how many \(fromValue[0].lowercased()) makes one \(toValue.lowercased())?")) {
+//                    HStack {
+//
+//                        TextField("Conversion factor", value: $factor, formatter: NumberFormatter())
+//                            .multilineTextAlignment(.center)
+//                            .keyboardType(.decimalPad)
+//                            .textFieldStyle(RoundedBorderTextFieldStyle())
+//                        Stepper(value: $factor[0], in: lowLimit...highLimit, step: 10.0) {
+//                            Text("\(factor[0], specifier: "%.2f")")
+//                        }
+//                        .labelsHidden()
+//                    }
 //                }
+                //                }
                 
                 // MARK: Save and Cancel buttons
                 Section {
@@ -89,14 +119,16 @@ struct CreateView: View {
                         Button(action: {
                             self.isPresented.wrappedValue.dismiss()
                             self.saveForm = true
-                            let conversion = Conversion(title: self.title, fromValue: self.fromValue, toValue: self.toValue, operation: self.operations[self.operation], factor: self.factor)
-                            print(self.factor)
+                            let subConversion = SubConversion(convertFrom: self.fromValue, convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
+                            var conversion = Conversion(title: self.title)
+                            conversion.subConversion.append(subConversion)
+                            print(self.toValue)
                             self.personal.create(conversion)
                             print("Save Action")
                         }) {
                             Text("Save")
                                 .font(.headline)
-                            }.buttonStyle(BorderlessButtonStyle())
+                        }.buttonStyle(BorderlessButtonStyle())
                         Spacer()
                     }
                 }
@@ -106,7 +138,6 @@ struct CreateView: View {
         }
         
     }
-    
     
     func conversionFactor_Example(fromValue: Int, operation: Operations) -> Int {
         var output: Int
@@ -136,7 +167,7 @@ struct CreateView: View {
             self.value = value.height
             print(value)
         }
-
+        
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { key in
             self.value = 0
         }

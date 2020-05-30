@@ -12,13 +12,8 @@ import SwiftUI
 struct PersonalView: View {
     @EnvironmentObject var personal: Personal
     @State private var showCreateView = false
-    @State private var title: String = ""
-    @State private var fromValue = String()
-    @State private var toValue = String()
-    @State private var operation: [Operations] = [.add, .subtract, .multiply, .divide]
-    @State private var factor: Float = 0
-    private var conversion = Conversion(title: "", fromValue: "", toValue: "", operation: .add, factor: 0)
     @State private var saveForm: Bool = false
+    private var conversion = Conversion(title: "")
     
     var body: some View {
         NavigationView {
@@ -28,8 +23,6 @@ struct PersonalView: View {
                     NavigationLink(destination: DetailView(conversion: conversion)) {
                         HStack {
                             Text("\(conversion.title)")
-                            Spacer()
-                            Text("\(conversion.fromValue)-\(conversion.toValue)")
                         }
                     }
                 }
