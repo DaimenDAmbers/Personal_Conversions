@@ -9,16 +9,25 @@
 import SwiftUI
 import Combine
 
+struct Item: Identifiable {
+    let id = UUID()
+    let title: String
+}
+
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     @State var title: String = ""
     @State var operation: Int = 0
-    @State var factor: Array<Float> = [0.00, 1.00]
+    @State var factor: [Float] = [1.00]
     @State var fromValue: String = ""
-    @State var toValue: [String] = ["", ""]
+    @State var toValue: [String] = [""]
     @State var value: CGFloat = 0
     @Binding var saveForm: Bool // If true, save method will run in parent function
+    @State private var subConversion: [Int] = [0]
+    private static var count = 0
+    
+    @State private var showPopover: Bool = false
     
     var operations: [Operations] = [.multiply, .divide]
     let lowLimit: Float = -1_000
@@ -32,47 +41,38 @@ struct CreateView: View {
                 TextField("Conversion name", text: $title)
                     .disableAutocorrection(true)
                 
-                // MARK: - To & From
+                // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
                     TextField("From", text: $fromValue)
                         .disableAutocorrection(true)
                 }
                 
-                
-                    Section(header: Button(action: {
-                        // Information
-                    }) {
-                        Text("What value(s) are you converting to?")
-                            .foregroundColor(.secondary)
-                        Image(systemName: "info.circle")
-                    }) {
-                        VStack {
-                            HStack {
-                                TextField("Value", text: $toValue[0])
-                                    .disableAutocorrection(true)
-                                    .multilineTextAlignment(.center)
-                                Stepper(value: $factor[0], in: lowLimit...highLimit) {
-                                    Text("\(factor[0], specifier: "%.2f")")
-                                }
-                            }
-                            // Will need to programatically add a new row on button click
-                            HStack {
-                                TextField("Value", text: $toValue[1])
-                                    .disableAutocorrection(true)
-                                    .multilineTextAlignment(.center)
-                                
-                                Stepper(value: $factor[1], in: lowLimit...highLimit) {
-                                    Text("\(factor[1], specifier: "%.2f")")
-                                }
-                            }
-                            
-                            Button(action: {
-                                // TODO: Action for adding a new row
-                            }) {
-                                Text("Add Row")
-                            }
+                // MARK: - Convert to values
+                Section(header: Button(action: {
+                    // Information
+//                    self.showPopover = true
+                }) {
+                    Text("What value(s) are you converting to?")
+                        .foregroundColor(.secondary)
+                    Image(systemName: "info.circle")
+                }) {
+                    
+                    List {
+                        ForEach(subConversion, id: \.self) { item in
+                            SubConversionView(toValue: self.$toValue[item], factor: self.$factor[item])
+                        }
+                        .onDelete(perform: deleteConvertTo)
+                        
+                        // Button to add new row
+                        HStack {
+                            Spacer()
+                            Button("Add Row", action: addItem)
+                                .multilineTextAlignment(.center)
+                                .buttonStyle(BorderlessButtonStyle())
+                            Spacer()
                         }
                     }
+                }
                 
                 // MARK: - Conversion Operator
                 // Conversion will always be a multiple of the original input
@@ -85,29 +85,12 @@ struct CreateView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
-                // MARK: - Stepper and Text Field
-                //                if(!fromValue.isEmpty && !toValue.isEmpty) {
-//                Section(header: Text("Using \(operations[operation].rawValue), how many \(fromValue[0].lowercased()) makes one \(toValue.lowercased())?")) {
-//                    HStack {
-//
-//                        TextField("Conversion factor", value: $factor, formatter: NumberFormatter())
-//                            .multilineTextAlignment(.center)
-//                            .keyboardType(.decimalPad)
-//                            .textFieldStyle(RoundedBorderTextFieldStyle())
-//                        Stepper(value: $factor[0], in: lowLimit...highLimit, step: 10.0) {
-//                            Text("\(factor[0], specifier: "%.2f")")
-//                        }
-//                        .labelsHidden()
-//                    }
-//                }
-                //                }
-                
                 // MARK: Save and Cancel buttons
                 Section {
                     HStack {
                         Spacer()
                         Button(action: {
-                            //Cancel will need be able to close modal without saving changes.
+                            //Cancel will not save changes.
                             self.isPresented.wrappedValue.dismiss()
                             self.saveForm = false
                             print("Cancel action")
@@ -119,11 +102,12 @@ struct CreateView: View {
                         Button(action: {
                             self.isPresented.wrappedValue.dismiss()
                             self.saveForm = true
-                            let subConversion = SubConversion(convertFrom: self.fromValue, convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
-                            var conversion = Conversion(title: self.title)
+                            let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
+                            var conversion = Conversion(title: self.title, conversionUnit: self.fromValue)
                             conversion.subConversion.append(subConversion)
-                            print(self.toValue)
                             self.personal.create(conversion)
+                            Self.count = 0
+                            print(subConversion)
                             print("Save Action")
                         }) {
                             Text("Save")
@@ -137,6 +121,27 @@ struct CreateView: View {
             .navigationBarTitle(Text("New Conversion"))
         }
         
+    }
+    
+    /// Adds a new items to the conver to value
+    private func addItem() {
+        self.factor.append(1.00)
+        self.toValue.append("")
+        Self.count += 1
+        self.subConversion.append(Self.count)
+        print(self.toValue)
+    }
+    
+    private func deleteConvertTo(at offsets: IndexSet) {
+        if(Self.count >= 0) {
+            print(offsets)
+            Self.count -= 1
+            subConversion.remove(atOffsets: offsets)
+//            factor.remove(atOffsets: offsets)
+//            toValue.remove(atOffsets: offsets)
+        } else {
+            Self.count = 0
+        }
     }
     
     func conversionFactor_Example(fromValue: Int, operation: Operations) -> Int {
@@ -161,6 +166,7 @@ struct CreateView: View {
         return output
     }
     
+    
     func raiseKeyboard() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { key in
             let value = key.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! CGRect
@@ -173,25 +179,6 @@ struct CreateView: View {
         }
     }
 }
-
-//extension Publishers {
-//    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
-//        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
-//        .map { $0.keyboardHeight }
-//
-//        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
-//            .map { _ in CGFloat(0) }
-//
-//        return MergeMany(willShow, willHide)
-//        .eraseToAnyPublisher()
-//    }
-//}
-//
-//extension Notification {
-//    var keyboardHeight: CGFloat {
-//        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
-//    }
-//}
 
 #if canImport(UIKit)
 extension View {

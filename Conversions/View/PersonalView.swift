@@ -13,7 +13,7 @@ struct PersonalView: View {
     @EnvironmentObject var personal: Personal
     @State private var showCreateView = false
     @State private var saveForm: Bool = false
-    private var conversion = Conversion(title: "")
+    private var conversion = Conversion(title: "", conversionUnit: "")
     
     var body: some View {
         NavigationView {
@@ -31,8 +31,8 @@ struct PersonalView: View {
                 .listStyle(GroupedListStyle())
                 
             }
+            .listStyle(GroupedListStyle())
             .navigationBarTitle("Personal")
-//            .listStyle(GroupedListStyle())
             .navigationBarItems(leading:
                 EditButton(), trailing:
                 Button(action: {

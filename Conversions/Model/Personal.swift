@@ -14,22 +14,15 @@ protocol Conv_Protocol {
     func create(_ conversion: Conversion)
 }
 
-/// Create multiple conversions in one
-struct SubConversion: Identifiable {
-    var id = UUID()
-    var convertFrom: String
-    var convertTo: [String]
-    var operation: Operations
-    var factor: [Float]
-}
-
 /// Ouline of a Conversion
 struct Conversion: Identifiable {
     var id = UUID()
     var title: String
+    var conversionUnit: String
     var subConversion = [SubConversion]()
-    init(title: String) {
+    init(title: String, conversionUnit: String) {
         self.title = title
+        self.conversionUnit = conversionUnit
     }
 }
 
@@ -43,7 +36,7 @@ enum Operations: String, CaseIterable {
 ///Used for creating personal conversions
 class Personal: Conv_Protocol, ObservableObject, Identifiable {
     var id = UUID()
-    @Published var conversion = [Conversion]()
+    @Published var conversion = [Conversion]() // Used to make the list of conversion on the in the Personal View
     
     func create(_ conversion: Conversion) {
         print(conversion.title)

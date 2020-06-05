@@ -9,18 +9,18 @@
 import SwiftUI
 
 struct ConvsersionListView: View {
-    var conversion: Conversion
+    var subConversion: SubConversion
     var fromValue: Float
     
     var body: some View {
         List {
-            ForEach(0 ..< conversion.subConversion[0].convertTo.count) { item in
+            ForEach(0 ..< subConversion.convertTo.count) { item in
                 HStack {
-                    Text("\(self.conversion.subConversion[0].convertTo[item])")
+                    Text("\(self.subConversion.convertTo[item])")
                     Spacer()
-                    Text(String(self.result(input: self.fromValue, factor: self.conversion.subConversion[0].factor[item], operation: self.conversion.subConversion[0].operation)))
+                    Text(String(self.result(input: self.fromValue, factor: self.subConversion.factor[item], operation: self.subConversion.operation)))
                 }
-            }   
+            }
         }
     }
     
@@ -44,19 +44,16 @@ struct ConvsersionListView: View {
             output = input! - factor
         case .multiply:
             output = input! * factor
-            print(input as Any)
-            print(factor)
         case .divide:
             output = input! / factor
         }
-        
+        print("input: \(input as Any), operation: \(operation), output: \(output)")
         return output
     }
 }
 
 struct ConvsersionListView_Previews: PreviewProvider {
-    var subConversion = SubConversion(convertFrom: "Money", convertTo: ["Change"], operation: .multiply, factor: [10])
     static var previews: some View {
-        ConvsersionListView(conversion: Conversion(title: "Distance"), fromValue: 10)
+        ConvsersionListView(subConversion: SubConversion(convertTo: ["Value", "Value2"], operation: .multiply, factor: [1.00, 2.00]), fromValue: 10)
     }
 }
