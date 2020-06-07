@@ -12,8 +12,6 @@ import SwiftUI
 struct PersonalView: View {
     @EnvironmentObject var personal: Personal
     @State private var showCreateView = false
-    @State private var saveForm: Bool = false
-    private var conversion = Conversion(title: "", conversionUnit: "")
     
     var body: some View {
         NavigationView {
@@ -21,34 +19,29 @@ struct PersonalView: View {
                 // Detail view should list all personal coneversions
                 ForEach(personal.conversion) { conversion in
                     NavigationLink(destination: DetailView(conversion: conversion)) {
-                        HStack {
-                            Text("\(conversion.title)")
-                        }
+                        Text("\(conversion.title)")
                     }
                 }
                 .onMove(perform: move)
-                .onDelete(perform: deleteConversion)
-                .listStyle(GroupedListStyle())
-                
+                .onDelete(perform: delete)
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle("Personal")
-            .navigationBarItems(leading:
-                EditButton(), trailing:
-                Button(action: {
+            .navigationBarItems(
+                leading: EditButton(),
+                trailing: Button(action: {
                     //Creates a new conversion
                     self.showCreateView.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                }.sheet(isPresented: $showCreateView, onDismiss: {
                 }) {
-                    CreateView(personal: self.personal, saveForm: self.$saveForm)
-                 }
-            )
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 20))
+            })
+        }.sheet(isPresented: $showCreateView) {
+            CreateView(personal: self.personal)
         }
     }
-    
-    func deleteConversion(at offsets: IndexSet) {
+        
+    func delete(at offsets: IndexSet) {
         personal.conversion.remove(atOffsets: offsets)
     }
     

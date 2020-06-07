@@ -15,7 +15,7 @@ protocol Conv_Protocol {
 }
 
 /// Ouline of a Conversion
-struct Conversion: Identifiable {
+class Conversion: Identifiable {
     var id = UUID()
     var title: String
     var conversionUnit: String
@@ -23,6 +23,10 @@ struct Conversion: Identifiable {
     init(title: String, conversionUnit: String) {
         self.title = title
         self.conversionUnit = conversionUnit
+    }
+    
+    func addSubConversion(_ subConversion: SubConversion) {
+        self.subConversion.append(subConversion)
     }
 }
 

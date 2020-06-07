@@ -9,11 +9,6 @@
 import SwiftUI
 import Combine
 
-struct Item: Identifiable {
-    let id = UUID()
-    let title: String
-}
-
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
@@ -23,7 +18,6 @@ struct CreateView: View {
     @State var fromValue: String = ""
     @State var toValue: [String] = [""]
     @State var value: CGFloat = 0
-    @Binding var saveForm: Bool // If true, save method will run in parent function
     @State private var subConversion: [Int] = [0]
     private static var count = 0
     
@@ -88,31 +82,13 @@ struct CreateView: View {
                 // MARK: Save and Cancel buttons
                 Section {
                     HStack {
-                        Spacer()
-                        Button(action: {
-                            //Cancel will not save changes.
-                            self.isPresented.wrappedValue.dismiss()
-                            self.saveForm = false
-                            print("Cancel action")
-                        }) {
-                            Text("Cancel")
-                        }.buttonStyle(BorderlessButtonStyle())
                         
                         Spacer()
-                        Button(action: {
-                            self.isPresented.wrappedValue.dismiss()
-                            self.saveForm = true
-                            let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
-                            var conversion = Conversion(title: self.title, conversionUnit: self.fromValue)
-                            conversion.subConversion.append(subConversion)
-                            self.personal.create(conversion)
-                            Self.count = 0
-                            print(subConversion)
-                            print("Save Action")
-                        }) {
-                            Text("Save")
-                                .font(.headline)
-                        }.buttonStyle(BorderlessButtonStyle())
+                        Button("Cancel") { self.cancelForm() }
+                            .buttonStyle(BorderlessButtonStyle())
+                        Spacer()
+                        Button("Save") { self.saveForm() }
+                            .buttonStyle(BorderlessButtonStyle())
                         Spacer()
                     }
                 }
@@ -130,6 +106,25 @@ struct CreateView: View {
         Self.count += 1
         self.subConversion.append(Self.count)
         print(self.toValue)
+    }
+    
+    /// Cancels the form
+    private func cancelForm() {
+        self.isPresented.wrappedValue.dismiss()
+        print("Cancel Form")
+    }
+    
+    
+    /// Saves the form
+    private func saveForm() {
+        self.isPresented.wrappedValue.dismiss()
+        let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
+        let conversion = Conversion(title: self.title, conversionUnit: self.fromValue)
+        conversion.addSubConversion(subConversion)
+        self.personal.create(conversion)
+        Self.count = 0
+        print(subConversion)
+        print("Save Form")
     }
     
     private func deleteConvertTo(at offsets: IndexSet) {
@@ -190,6 +185,6 @@ extension View {
 
 struct CreateView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateView(personal: Personal(), saveForm: .constant(true))
+        CreateView(personal: Personal())
     }
 }
