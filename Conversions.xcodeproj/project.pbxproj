@@ -21,6 +21,7 @@
 		D314A5582481C83100E03EBA /* ConvsersionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D314A5572481C83100E03EBA /* ConvsersionListView.swift */; };
 		D315166C246B34D000444FAF /* PersonalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D315166B246B34D000444FAF /* PersonalView.swift */; };
 		D315166E246B34E700444FAF /* UniversalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D315166D246B34E700444FAF /* UniversalView.swift */; };
+		D31B753C248C8C7700AFF036 /* EditConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31B753B248C8C7700AFF036 /* EditConversion.swift */; };
 		D3372450247E04F4004BC65C /* PersonalTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D337244F247E04F4004BC65C /* PersonalTest.swift */; };
 		D3372454247F5A3E004BC65C /* KeyboardAdaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3372453247F5A3E004BC65C /* KeyboardAdaptive.swift */; };
 		D378FF16248449FA00C75D00 /* SubConversionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D378FF15248449FA00C75D00 /* SubConversionView.swift */; };
@@ -59,6 +60,7 @@
 		D314A5572481C83100E03EBA /* ConvsersionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvsersionListView.swift; sourceTree = "<group>"; };
 		D315166B246B34D000444FAF /* PersonalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalView.swift; sourceTree = "<group>"; };
 		D315166D246B34E700444FAF /* UniversalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalView.swift; sourceTree = "<group>"; };
+		D31B753B248C8C7700AFF036 /* EditConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditConversion.swift; sourceTree = "<group>"; };
 		D337244F247E04F4004BC65C /* PersonalTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalTest.swift; sourceTree = "<group>"; };
 		D3372453247F5A3E004BC65C /* KeyboardAdaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAdaptive.swift; sourceTree = "<group>"; };
 		D378FF15248449FA00C75D00 /* SubConversionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubConversionView.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				D304E1132467AFA600261CBA /* DetailView_Example.swift */,
 				D311A16E246CEF9A00C64A6F /* DetailView.swift */,
 				D315166B246B34D000444FAF /* PersonalView.swift */,
+				D31B753B248C8C7700AFF036 /* EditConversion.swift */,
 				D315166D246B34E700444FAF /* UniversalView.swift */,
 				D314A5592481CB2400E03EBA /* Supporting Views */,
 			);
@@ -295,6 +298,7 @@
 				D3073DE024678F2C00FB2217 /* TypesView.swift in Sources */,
 				D3073DDC24678E2700FB2217 /* Types.swift in Sources */,
 				D315166E246B34E700444FAF /* UniversalView.swift in Sources */,
+				D31B753C248C8C7700AFF036 /* EditConversion.swift in Sources */,
 				D378FF16248449FA00C75D00 /* SubConversionView.swift in Sources */,
 				D3BCF5A7246B40DE003EF08A /* Personal.swift in Sources */,
 				D3BCF5A9246B4150003EF08A /* Universal.swift in Sources */,
