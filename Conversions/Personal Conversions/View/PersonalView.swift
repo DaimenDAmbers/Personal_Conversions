@@ -20,10 +20,14 @@ struct PersonalView: View {
                 ForEach(personal.conversion) { conversion in
                     NavigationLink(destination: DetailView(conversion: conversion)) {
                         Text("\(conversion.title)")
+                            .contextMenu {
+                                Text(String(conversion.conversionUnit))
+                        }
                     }
                 }
                 .onMove(perform: move)
                 .onDelete(perform: delete)
+                
             }
             .listStyle(GroupedListStyle())
             .navigationBarTitle("Personal")
@@ -40,7 +44,7 @@ struct PersonalView: View {
             CreateView(personal: self.personal)
         }
     }
-        
+    
     func delete(at offsets: IndexSet) {
         personal.conversion.remove(atOffsets: offsets)
     }

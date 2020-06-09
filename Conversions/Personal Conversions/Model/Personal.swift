@@ -14,20 +14,30 @@ protocol Conv_Protocol {
     func create(_ conversion: Conversion)
 }
 
+/// Create multiple conversions in one
+struct SubConversion: Identifiable {
+    var id = UUID()
+    var convertTo: [String]
+    var operation: Operations
+    var factor: [Float]
+
+}
+
 /// Ouline of a Conversion
 class Conversion: Identifiable {
     var id = UUID()
     var title: String
     var conversionUnit: String
-    var subConversion = [SubConversion]()
-    init(title: String, conversionUnit: String) {
+    var subConversion: SubConversion
+    init(title: String, conversionUnit: String, subConversion: SubConversion) {
         self.title = title
         self.conversionUnit = conversionUnit
+        self.subConversion = subConversion
     }
     
-    func addSubConversion(_ subConversion: SubConversion) {
-        self.subConversion.append(subConversion)
-    }
+//    func addSubConversion(_ subConversion: SubConversion) {
+//        self.subConversion.append(subConversion)
+//    }
 }
 
 enum Operations: String, CaseIterable {

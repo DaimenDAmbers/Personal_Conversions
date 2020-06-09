@@ -8,15 +8,6 @@
 
 import SwiftUI
 
-/// Create multiple conversions in one
-struct SubConversion: Identifiable {
-    var id = UUID()
-    var convertTo: [String]
-    var operation: Operations
-    var factor: [Float]
-
-}
-
 struct SubConversionView: View, Identifiable {
     var id = UUID()
     @Binding var toValue: String

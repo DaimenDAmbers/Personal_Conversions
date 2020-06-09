@@ -37,7 +37,7 @@ struct CreateView: View {
                 
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
-                    TextField("From", text: $fromValue)
+                    TextField("Meters, Kilograms, etc.", text: $fromValue)
                         .disableAutocorrection(true)
                 }
                 
@@ -80,21 +80,25 @@ struct CreateView: View {
                 }
                 
                 // MARK: Save and Cancel buttons
-                Section {
-                    HStack {
-                        
-                        Spacer()
-                        Button("Cancel") { self.cancelForm() }
-                            .buttonStyle(BorderlessButtonStyle())
-                        Spacer()
-                        Button("Save") { self.saveForm() }
-                            .buttonStyle(BorderlessButtonStyle())
-                        Spacer()
-                    }
-                }
+//                Section {
+//                    HStack {
+//
+//                        Spacer()
+//                        Button("Cancel") { self.cancelForm() }
+//                            .buttonStyle(BorderlessButtonStyle())
+//                        Spacer()
+//                        Button("Save") { self.saveForm() }
+//                            .buttonStyle(BorderlessButtonStyle())
+//                        Spacer()
+//                    }
+//                }
             }
             .keyboardAdaptive()
-            .navigationBarTitle(Text("New Conversion"))
+            .navigationBarTitle(Text("New Conversion"), displayMode: .inline)
+            .navigationBarItems(
+                leading: Button("Cancel") { self.cancelForm() },
+                trailing: Button("Save") { self.saveForm() }
+            )
         }
         
     }
@@ -119,8 +123,8 @@ struct CreateView: View {
     private func saveForm() {
         self.isPresented.wrappedValue.dismiss()
         let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
-        let conversion = Conversion(title: self.title, conversionUnit: self.fromValue)
-        conversion.addSubConversion(subConversion)
+        let conversion = Conversion(title: self.title, conversionUnit: self.fromValue, subConversion: subConversion)
+//        conversion.addSubConversion(subConversion)
         self.personal.create(conversion)
         Self.count = 0
         print(subConversion)
