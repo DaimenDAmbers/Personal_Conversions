@@ -15,6 +15,7 @@ enum ConversionError: Error {
 
 struct EditConversionView: View {
     @State var conversion: Conversion
+    @State private var isEditing: EditMode = .inactive
     @Environment(\.presentationMode) var showingEditOptions
     var body: some View {
         NavigationView {
@@ -26,6 +27,39 @@ struct EditConversionView: View {
                 Section(header: Text("Conversion Unit Name")) {
                     TextField("\(conversion.conversionUnit)", text: $conversion.conversionUnit)
                 }
+                
+                Section(header: Text("Conversions")) {
+                    List {
+                        ForEach(0 ..< conversion.subConversion.convertTo.count) { item in
+                            HStack {
+                                Button(action: {
+                                    // Minus button
+                                    self.isEditing = .active
+                                    print("delete")
+                                }) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundColor(.red)
+                                }
+                                TextField("\(self.conversion.subConversion.convertTo[item])", text: self.$conversion.subConversion.convertTo[item])
+                            }
+                        }
+                    .onDelete(perform: deleteRow)
+                    }
+                    HStack {
+                        Button(action: {
+                            self.addRow()
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(.green)
+                                Text("add row")
+                            }
+                        }
+//                        Spacer()
+//                        Button("Add Row", action: addRow)
+//                        Spacer()
+                    }
+                }
             }
             .navigationBarTitle("Edit Conversion", displayMode: .inline)
             .navigationBarItems(
@@ -33,6 +67,7 @@ struct EditConversionView: View {
                 trailing: Button("Save") { self.saveEdits() }
             )
         }
+        .keyboardAdaptive()
     }
     
     /// Error handler for the submitting the changes to the conversion.
@@ -51,10 +86,20 @@ struct EditConversionView: View {
         }
     }
     
+    private func addRow() {
+        conversion.subConversion.convertTo.append("Value")
+    }
+    
+    //Need to fix deleting rows in edit
+    // Will need to rethink how subconversion works
+    private func deleteRow(at offsets: IndexSet) {
+        conversion.subConversion.convertTo.remove(atOffsets: offsets)
+    }
+    
     /// Adds a new items to the conver to value
     private func saveEdits() {
         do {
-            try handleErrors(title: conversion.title, conversionUnit: conversion.conversionUnit)
+            try conversion.saveEdits(title: self.conversion.title, conversionUnit: self.conversion.conversionUnit)
             self.showingEditOptions.wrappedValue.dismiss()
             print("Save Edits")
         } catch ConversionError.emptyTitle {

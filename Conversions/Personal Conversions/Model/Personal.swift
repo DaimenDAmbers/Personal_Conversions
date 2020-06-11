@@ -38,6 +38,19 @@ class Conversion: Identifiable {
 //    func addSubConversion(_ subConversion: SubConversion) {
 //        self.subConversion.append(subConversion)
 //    }
+    func saveEdits(title: String, conversionUnit: String) throws {
+        let emptyString = String()
+        guard title != emptyString else {
+            throw ConversionError.emptyTitle
+        }
+        
+        guard conversionUnit != emptyString else {
+            throw ConversionError.emptyConversionUnit
+        }
+        
+        self.title = title
+        self.conversionUnit = conversionUnit
+    }
 }
 
 enum Operations: String, CaseIterable {

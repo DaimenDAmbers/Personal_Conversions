@@ -33,8 +33,8 @@ struct DetailView: View {
                 
                 ConvsersionListView(subConversion: conversion.subConversion, fromValue: fromValue)
             }
-            .keyboardAdaptive()
         }
+        .keyboardAdaptive()
         .sheet(isPresented: $showingEditModal) {
             EditConversionView(conversion: self.conversion)
         }
