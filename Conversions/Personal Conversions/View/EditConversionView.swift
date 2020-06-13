@@ -55,9 +55,6 @@ struct EditConversionView: View {
                                 Text("add row")
                             }
                         }
-//                        Spacer()
-//                        Button("Add Row", action: addRow)
-//                        Spacer()
                     }
                 }
             }
