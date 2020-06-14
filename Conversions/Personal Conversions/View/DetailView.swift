@@ -14,7 +14,7 @@ import Combine
 struct DetailView: View {
     
     // MARK: Variables
-    @State private var fromValue: Float = 0
+    @State private var userInput: Float = 0
     @State private var keyboardHeight: CGFloat = 0
     @State private var showingActionSheet = false
     @State private var showingEditModal = false
@@ -23,15 +23,15 @@ struct DetailView: View {
     var body: some View {
         return NavigationView {
             VStack {
-                TextField("", value: $fromValue, formatter: NumberFormatter())
+                TextField("", value: $userInput, formatter: NumberFormatter())
                     .multilineTextAlignment(.center)
                     .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
 //                    .keyboardType(.decimalPad)
                 
-                Text(conversion.conversionUnit)
+                Text(conversion.unitName)
                     .font(.title)
                 
-                ConvsersionListView(subConversion: conversion.subConversion, fromValue: fromValue)
+                ConvsersionListView(subConversion: conversion.subConversion, intInput: userInput)
             }
         }
         .keyboardAdaptive()
@@ -62,10 +62,54 @@ struct DetailView: View {
     }
 }
 
+struct ConvsersionListView: View {
+    var subConversion: SubConversion
+    var intInput: Float
+    
+    var body: some View {
+        List {
+            ForEach(0 ..< subConversion.unitName.count) { item in
+                HStack {
+                    Text("\(self.subConversion.unitName[item])")
+                    Spacer()
+                    Text(String(self.result(input: self.intInput, factor: self.subConversion.factor[item], operation: self.subConversion.operation)))
+                }
+            }
+        }
+    }
+    
+    /**
+     Takes the input and makes a decision on how to use the factor based on the operator.
+     - Parameters:
+        - input : Takes the users' inputs
+        - factor: Is how much the input is multiplied or divided by
+        - operation: Determines weather to multiply or divide depending on weather using the to or from conversion
+     - Returns: Computed conversion
+     */
+    func result(input: Float?, factor: Float, operation: Operations) -> Float {
+        let output: Float
+        guard input != nil else {
+            return 0
+        }
+        switch operation {
+        case .add:
+            output = input! + factor
+        case .subtract:
+            output = input! - factor
+        case .multiply:
+            output = input! * factor
+        case .divide:
+            output = input! / factor
+        }
+        print("input: \(input as Any), operation: \(operation), output: \(output)")
+        return output
+    }
+}
+
 
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", conversionUnit: "Feet", subConversion: SubConversion(convertTo: ["Test"], operation: .multiply, factor: [2])))
+        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversion: SubConversion(unitName: ["Test"], factor: [2], operation: .multiply)))
     }
 }

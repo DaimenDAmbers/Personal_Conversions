@@ -9,47 +9,53 @@
 import Foundation
 import SwiftUI
 
+
+// MARK: Errors
+enum ConversionError: Error {
+    case emptyTitle
+    case emptyUnitName
+}
+
+// MARK: Protocol
 protocol Conv_Protocol {
     var conversion: [Conversion] { get set }
     func create(_ conversion: Conversion)
 }
 
+// MARK: Struct
 /// Create multiple conversions in one
 struct SubConversion: Identifiable, Hashable {
     var id = UUID()
-    var convertTo: [String]
-    var operation: Operations
+    var unitName: [String]
     var factor: [Float]
-
+    var operation: Operations
 }
 
+// MARK: Classes
 /// Ouline of a Conversion
 class Conversion: Identifiable {
     var id = UUID()
     var title: String
-    var conversionUnit: String
+    var unitName: String
     var subConversion: SubConversion
-    init(title: String, conversionUnit: String, subConversion: SubConversion) {
+    init(title: String, unitName: String, subConversion: SubConversion) {
         self.title = title
-        self.conversionUnit = conversionUnit
+        self.unitName = unitName
         self.subConversion = subConversion
     }
-    
-//    func addSubConversion(_ subConversion: SubConversion) {
-//        self.subConversion.append(subConversion)
-//    }
-    func saveEdits(title: String, conversionUnit: String) throws {
+
+    func saveEdits(title: String, unitName: String) throws {
         let emptyString = String()
         guard title != emptyString else {
             throw ConversionError.emptyTitle
         }
         
-        guard conversionUnit != emptyString else {
-            throw ConversionError.emptyConversionUnit
+        guard unitName != emptyString else {
+            throw ConversionError.emptyUnitName
         }
         
         self.title = title
-        self.conversionUnit = conversionUnit
+        self.unitName = unitName
     }
 }
 
@@ -70,20 +76,4 @@ class Personal: Conv_Protocol, ObservableObject, Identifiable {
         self.conversion.append(conversion)
     }
     
-    func conversionFactor(input: Int, operation: Operations) -> Int {
-        var output: Int
-        switch operation {
-        case .add:
-            output = input
-        case .subtract:
-            output = input + input - 1
-        case .divide:
-            output = input/input
-        case .multiply:
-            output = input*input
-        }
-        
-        return output
-    }
- 
 }

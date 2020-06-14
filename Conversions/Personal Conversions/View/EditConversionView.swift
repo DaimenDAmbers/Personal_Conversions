@@ -8,11 +8,6 @@
 
 import SwiftUI
 
-enum ConversionError: Error {
-    case emptyTitle
-    case emptyConversionUnit
-}
-
 struct EditConversionView: View {
     @State var conversion: Conversion
     @State private var isEditing: EditMode = .inactive
@@ -25,12 +20,12 @@ struct EditConversionView: View {
                 }
                 
                 Section(header: Text("Conversion Unit Name")) {
-                    TextField("\(conversion.conversionUnit)", text: $conversion.conversionUnit)
+                    TextField("\(conversion.unitName)", text: $conversion.unitName)
                 }
                 
                 Section(header: Text("Conversions")) {
                     List {
-                        ForEach(0 ..< conversion.subConversion.convertTo.count) { item in
+                        ForEach(0 ..< conversion.subConversion.unitName.count) { item in
                             HStack {
                                 Button(action: {
                                     // Minus button
@@ -40,7 +35,7 @@ struct EditConversionView: View {
                                     Image(systemName: "minus.circle.fill")
                                         .foregroundColor(.red)
                                 }
-                                TextField("\(self.conversion.subConversion.convertTo[item])", text: self.$conversion.subConversion.convertTo[item])
+                                TextField("\(self.conversion.subConversion.unitName[item])", text: self.$conversion.subConversion.unitName[item])
                             }
                         }
                     .onDelete(perform: deleteRow)
@@ -66,6 +61,18 @@ struct EditConversionView: View {
         }
         .keyboardAdaptive()
     }
+
+    
+    private func addRow() {
+        conversion.subConversion.unitName.append("Value")
+    }
+    
+    //Need to fix deleting rows in edit
+    // Will need to rethink how subconversion works
+    private func deleteRow(at offsets: IndexSet) {
+        conversion.subConversion.unitName.remove(atOffsets: offsets)
+    }
+    
     
     /// Error handler for the submitting the changes to the conversion.
     /// - Parameters:
@@ -78,30 +85,20 @@ struct EditConversionView: View {
             throw ConversionError.emptyTitle
         }
         
-        guard conversion.conversionUnit != emptyString else {
-            throw ConversionError.emptyConversionUnit
+        guard conversion.unitName != emptyString else {
+            throw ConversionError.emptyUnitName
         }
-    }
-    
-    private func addRow() {
-        conversion.subConversion.convertTo.append("Value")
-    }
-    
-    //Need to fix deleting rows in edit
-    // Will need to rethink how subconversion works
-    private func deleteRow(at offsets: IndexSet) {
-        conversion.subConversion.convertTo.remove(atOffsets: offsets)
     }
     
     /// Adds a new items to the conver to value
     private func saveEdits() {
         do {
-            try conversion.saveEdits(title: self.conversion.title, conversionUnit: self.conversion.conversionUnit)
+            try conversion.saveEdits(title: self.conversion.title, unitName: self.conversion.unitName)
             self.showingEditOptions.wrappedValue.dismiss()
             print("Save Edits")
         } catch ConversionError.emptyTitle {
             print("ERROR: Empty Conversion Name")
-        } catch ConversionError.emptyConversionUnit {
+        } catch ConversionError.emptyUnitName {
             print("ERROR: Empty Conversion Unit")
         } catch {
             print("Unexpected error: \(error)")
@@ -117,6 +114,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: Conversion(title: "Distance", conversionUnit: "Miles", subConversion: SubConversion(convertTo: ["Test"], operation: .multiply, factor: [2])))
+        EditConversionView(conversion: Conversion(title: "Test", unitName: "Meters", subConversion: SubConversion(unitName: ["Miles"], factor: [2], operation: .multiply)))
     }
 }

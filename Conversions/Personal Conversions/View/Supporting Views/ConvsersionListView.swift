@@ -14,9 +14,9 @@ struct ConvsersionListView: View {
     
     var body: some View {
         List {
-            ForEach(0 ..< subConversion.convertTo.count) { item in
+            ForEach(0 ..< subConversion.unitName.count) { item in
                 HStack {
-                    Text("\(self.subConversion.convertTo[item])")
+                    Text("\(self.subConversion.unitName[item])")
                     Spacer()
                     Text(String(self.result(input: self.fromValue, factor: self.subConversion.factor[item], operation: self.subConversion.operation)))
                 }
@@ -54,6 +54,6 @@ struct ConvsersionListView: View {
 
 struct ConvsersionListView_Previews: PreviewProvider {
     static var previews: some View {
-        ConvsersionListView(subConversion: SubConversion(convertTo: ["Value", "Value2"], operation: .multiply, factor: [1.00, 2.00]), fromValue: 10)
+        ConvsersionListView(subConversion: SubConversion(unitName: ["Value", "Value2"], factor: [1.00, 2.00], operation: .multiply), fromValue: 10)
     }
 }

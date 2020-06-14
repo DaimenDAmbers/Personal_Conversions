@@ -21,7 +21,7 @@ struct PersonalView: View {
                     NavigationLink(destination: DetailView(conversion: conversion)) {
                         Text("\(conversion.title)")
                             .contextMenu {
-                                Text(String(conversion.conversionUnit))
+                                Text(String(conversion.unitName))
                         }
                     }
                 }

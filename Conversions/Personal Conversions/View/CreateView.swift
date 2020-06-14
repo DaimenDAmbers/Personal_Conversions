@@ -59,13 +59,16 @@ struct CreateView: View {
                         .onDelete(perform: deleteConvertTo)
                         
                         // Button to add new row
-                        HStack {
-                            Spacer()
-                            Button("Add Row", action: addItem)
-                                .multilineTextAlignment(.center)
-                                .buttonStyle(BorderlessButtonStyle())
-                            Spacer()
+                        Button(action: {
+                            self.addItem()
+                        }) {
+                            HStack {
+                                Spacer()
+                                Text("Add Row")
+                                Spacer()
+                            }
                         }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                 }
                 
@@ -96,7 +99,7 @@ struct CreateView: View {
         self.toValue.append("")
         Self.count += 1
         self.subConversion.append(Self.count)
-        self.testConversion.append(SubConversion(convertTo: ["String"], operation: .multiply, factor: [1]))
+        self.testConversion.append(SubConversion(unitName: ["String"], factor: [1], operation: .multiply))
         print(self.toValue)
     }
     
@@ -109,8 +112,8 @@ struct CreateView: View {
     
     /// Saves the form
     private func saveForm() {
-        let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
-        let conversion = Conversion(title: self.title, conversionUnit: self.fromValue, subConversion: subConversion)
+        let subConversion = SubConversion(unitName: self.toValue, factor: self.factor, operation: self.operations[self.operation])
+        let conversion = Conversion(title: self.title, unitName: self.fromValue, subConversion: subConversion)
         self.personal.create(conversion)
         Self.count = 0
         print(subConversion)
