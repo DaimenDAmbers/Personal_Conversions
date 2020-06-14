@@ -8,8 +8,12 @@
 
 import SwiftUI
 
-struct SubConversionView: View, Identifiable {
-    var id = UUID()
+struct SubConversionView: View, Identifiable, Hashable {
+    static func == (lhs: SubConversionView, rhs: SubConversionView) -> Bool {
+        return lhs.factor == rhs.factor && lhs.toValue == rhs.toValue
+    }
+    
+    let id = UUID()
     @Binding var toValue: String
     @Binding var factor: Float
     
@@ -22,6 +26,10 @@ struct SubConversionView: View, Identifiable {
                 Text("\(self.factor, specifier: "%.2f")")
             }
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

@@ -19,6 +19,7 @@ struct CreateView: View {
     @State var toValue: [String] = [""]
     @State var value: CGFloat = 0
     @State private var subConversion: [Int] = [0]
+    @State private var testConversion = [SubConversion]()
     private static var count = 0
     
     @State private var showPopover: Bool = false
@@ -78,20 +79,6 @@ struct CreateView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
-                
-                // MARK: Save and Cancel buttons
-//                Section {
-//                    HStack {
-//
-//                        Spacer()
-//                        Button("Cancel") { self.cancelForm() }
-//                            .buttonStyle(BorderlessButtonStyle())
-//                        Spacer()
-//                        Button("Save") { self.saveForm() }
-//                            .buttonStyle(BorderlessButtonStyle())
-//                        Spacer()
-//                    }
-//                }
             }
             .keyboardAdaptive()
             .navigationBarTitle(Text("New Conversion"), displayMode: .inline)
@@ -109,6 +96,7 @@ struct CreateView: View {
         self.toValue.append("")
         Self.count += 1
         self.subConversion.append(Self.count)
+        self.testConversion.append(SubConversion(convertTo: ["String"], operation: .multiply, factor: [1]))
         print(self.toValue)
     }
     
@@ -121,14 +109,13 @@ struct CreateView: View {
     
     /// Saves the form
     private func saveForm() {
-        self.isPresented.wrappedValue.dismiss()
         let subConversion = SubConversion(convertTo: self.toValue, operation: self.operations[self.operation], factor: self.factor)
         let conversion = Conversion(title: self.title, conversionUnit: self.fromValue, subConversion: subConversion)
-//        conversion.addSubConversion(subConversion)
         self.personal.create(conversion)
         Self.count = 0
         print(subConversion)
         print("Save Form")
+        self.isPresented.wrappedValue.dismiss()
     }
     
     private func deleteConvertTo(at offsets: IndexSet) {
@@ -175,6 +162,23 @@ struct CreateView: View {
         
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { key in
             self.value = 0
+        }
+    }
+}
+
+struct SubConversionView: View, Identifiable {
+    let id = UUID()
+    @Binding var toValue: String
+    @Binding var factor: Float
+    
+    var body: some View {
+        HStack {
+            TextField("Value", text: self.$toValue)
+                .disableAutocorrection(true)
+                .multilineTextAlignment(/*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            Stepper(value: self.$factor, in: -1_000...1_000) {
+                Text("\(self.factor, specifier: "%.2f")")
+            }
         }
     }
 }

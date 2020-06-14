@@ -24,7 +24,6 @@
 		D315166E246B34E700444FAF /* UniversalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D315166D246B34E700444FAF /* UniversalView.swift */; };
 		D3372450247E04F4004BC65C /* PersonalTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D337244F247E04F4004BC65C /* PersonalTest.swift */; };
 		D3372454247F5A3E004BC65C /* KeyboardAdaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3372453247F5A3E004BC65C /* KeyboardAdaptive.swift */; };
-		D378FF16248449FA00C75D00 /* SubConversionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D378FF15248449FA00C75D00 /* SubConversionView.swift */; };
 		D3BCF5A7246B40DE003EF08A /* Personal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5A6246B40DE003EF08A /* Personal.swift */; };
 		D3BCF5A9246B4150003EF08A /* Universal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5A8246B4150003EF08A /* Universal.swift */; };
 		D3BCF5AB246B4CAA003EF08A /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5AA246B4CAA003EF08A /* CreateView.swift */; };
@@ -63,7 +62,6 @@
 		D315166D246B34E700444FAF /* UniversalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalView.swift; sourceTree = "<group>"; };
 		D337244F247E04F4004BC65C /* PersonalTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalTest.swift; sourceTree = "<group>"; };
 		D3372453247F5A3E004BC65C /* KeyboardAdaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAdaptive.swift; sourceTree = "<group>"; };
-		D378FF15248449FA00C75D00 /* SubConversionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubConversionView.swift; sourceTree = "<group>"; };
 		D3BCF5A6246B40DE003EF08A /* Personal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Personal.swift; sourceTree = "<group>"; };
 		D3BCF5A8246B4150003EF08A /* Universal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Universal.swift; sourceTree = "<group>"; };
 		D3BCF5AA246B4CAA003EF08A /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
@@ -168,7 +166,6 @@
 			isa = PBXGroup;
 			children = (
 				D314A5572481C83100E03EBA /* ConvsersionListView.swift */,
-				D378FF15248449FA00C75D00 /* SubConversionView.swift */,
 				D3073DDF24678F2C00FB2217 /* TypesView.swift */,
 			);
 			path = "Supporting Views";
@@ -331,7 +328,6 @@
 				D3048233248DCF610045F3B6 /* EditConversionView.swift in Sources */,
 				D3073DDC24678E2700FB2217 /* Types.swift in Sources */,
 				D315166E246B34E700444FAF /* UniversalView.swift in Sources */,
-				D378FF16248449FA00C75D00 /* SubConversionView.swift in Sources */,
 				D3BCF5A7246B40DE003EF08A /* Personal.swift in Sources */,
 				D3BCF5A9246B4150003EF08A /* Universal.swift in Sources */,
 			);

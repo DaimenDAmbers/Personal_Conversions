@@ -15,7 +15,7 @@ protocol Conv_Protocol {
 }
 
 /// Create multiple conversions in one
-struct SubConversion: Identifiable {
+struct SubConversion: Identifiable, Hashable {
     var id = UUID()
     var convertTo: [String]
     var operation: Operations
@@ -53,7 +53,7 @@ class Conversion: Identifiable {
     }
 }
 
-enum Operations: String, CaseIterable {
+enum Operations: String, CaseIterable, Equatable {
     case add = "addition"
     case subtract = "subtraction"
     case divide = "division"
