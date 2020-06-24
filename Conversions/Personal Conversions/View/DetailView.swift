@@ -15,10 +15,9 @@ struct DetailView: View {
     
     // MARK: Variables
     @State private var userInput: Float = 0
-    @State private var keyboardHeight: CGFloat = 0
     @State private var showingActionSheet = false
     @State private var showingEditModal = false
-    var conversion: Conversion
+    @State var conversion: Conversion
     
     var body: some View {
         return NavigationView {
@@ -36,7 +35,7 @@ struct DetailView: View {
         }
         .keyboardAdaptive()
         .sheet(isPresented: $showingEditModal) {
-            EditConversionView(conversion: self.conversion)
+            EditConversionView(conversion: self.$conversion)
         }
         .navigationBarTitle(Text("\(conversion.title)"), displayMode: .inline)
         .navigationBarItems(trailing:
@@ -68,9 +67,9 @@ struct ConvsersionListView: View {
     
     var body: some View {
         List {
-            ForEach(0 ..< subConversion.unitName.count) { item in
+            ForEach(0 ..< subConversion.subUnitName.count) { item in
                 HStack {
-                    Text("\(self.subConversion.unitName[item])")
+                    Text("\(self.subConversion.subUnitName[item])")
                     Spacer()
                     Text(String(self.result(input: self.intInput, factor: self.subConversion.factor[item], operation: self.subConversion.operation)))
                 }
@@ -110,6 +109,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversion: SubConversion(unitName: ["Test"], factor: [2], operation: .multiply)))
+        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversion: SubConversion(subUnitName: ["Test"], factor: [2], operation: .multiply)))
     }
 }

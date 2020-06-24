@@ -104,7 +104,6 @@
 				D3D65BE4248DCE0F00497FA6 /* Personal Conversions */,
 				D3D65BE5248DCE1900497FA6 /* Universal Conversions */,
 				D3372455247F5C4C004BC65C /* Helper */,
-				D3073DBD24678E0200FB2217 /* ContentView.swift */,
 				D3073DBF24678E0300FB2217 /* Assets.xcassets */,
 				D3073DC424678E0300FB2217 /* LaunchScreen.storyboard */,
 				D3073DC724678E0300FB2217 /* Info.plist */,
@@ -144,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				D3BCF5AA246B4CAA003EF08A /* CreateView.swift */,
+				D3073DBD24678E0200FB2217 /* ContentView.swift */,
 				D311A16E246CEF9A00C64A6F /* DetailView.swift */,
 				D3048232248DCF610045F3B6 /* EditConversionView.swift */,
 				D315166B246B34D000444FAF /* PersonalView.swift */,

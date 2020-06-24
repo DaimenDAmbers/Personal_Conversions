@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+/// Adds a done button on the keyboard
 struct Keyboard: UIViewRepresentable {
     @Binding var text: String
     var keyType: UIKeyboardType

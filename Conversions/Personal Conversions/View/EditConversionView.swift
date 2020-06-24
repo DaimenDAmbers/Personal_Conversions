@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct EditConversionView: View {
-    @State var conversion: Conversion
+    @Binding var conversion: Conversion
     @State private var isEditing: EditMode = .inactive
     @Environment(\.presentationMode) var showingEditOptions
     var body: some View {
@@ -20,12 +20,12 @@ struct EditConversionView: View {
                 }
                 
                 Section(header: Text("Conversion Unit Name")) {
-                    TextField("\(conversion.unitName)", text: $conversion.unitName)
+                    TextField("\(conversion.unitName)", text: $conversion.unitName)                        
                 }
                 
                 Section(header: Text("Conversions")) {
                     List {
-                        ForEach(0 ..< conversion.subConversion.unitName.count) { item in
+                        ForEach(0 ..< conversion.subConversion.subUnitName.count) { item in
                             HStack {
                                 Button(action: {
                                     // Minus button
@@ -35,11 +35,12 @@ struct EditConversionView: View {
                                     Image(systemName: "minus.circle.fill")
                                         .foregroundColor(.red)
                                 }
-                                TextField("\(self.conversion.subConversion.unitName[item])", text: self.$conversion.subConversion.unitName[item])
+                                TextField("\(self.conversion.subConversion.subUnitName[item])", text: self.$conversion.subConversion.subUnitName[item])
                             }
                         }
-                    .onDelete(perform: deleteRow)
+                        .onDelete(perform: deleteRow)
                     }
+                    
                     HStack {
                         Button(action: {
                             self.addRow()
@@ -64,22 +65,22 @@ struct EditConversionView: View {
 
     
     private func addRow() {
-        conversion.subConversion.unitName.append("Value")
+        conversion.subConversion.subUnitName.append("Value")
     }
     
     //Need to fix deleting rows in edit
     // Will need to rethink how subconversion works
     private func deleteRow(at offsets: IndexSet) {
-        conversion.subConversion.unitName.remove(atOffsets: offsets)
+        conversion.subConversion.subUnitName.remove(atOffsets: offsets)
     }
     
     
     /// Error handler for the submitting the changes to the conversion.
     /// - Parameters:
     ///   - title: Changes the name of the conversion
-    ///   - conversionUnit: Changes the name of the conversion unit
+    ///   - subUnitName: Changes the name of the conversion unit
     /// - Throws: Will throw an error if there are empty strings in either the conversion name or unit.
-    private func handleErrors(title: String, conversionUnit: String) throws {
+    private func handleErrors(title: String, unitName: String) throws {
         let emptyString = String()
         guard conversion.title != emptyString else {
             throw ConversionError.emptyTitle
@@ -114,6 +115,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: Conversion(title: "Test", unitName: "Meters", subConversion: SubConversion(unitName: ["Miles"], factor: [2], operation: .multiply)))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversion: SubConversion(subUnitName: ["Miles"], factor: [2], operation: .multiply))))
     }
 }

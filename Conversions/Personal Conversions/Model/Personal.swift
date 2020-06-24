@@ -16,26 +16,34 @@ enum ConversionError: Error {
     case emptyUnitName
 }
 
-// MARK: Protocol
+// MARK: Enummerations
+enum Operations: String, CaseIterable, Equatable {
+    case add = "addition"
+    case subtract = "subtraction"
+    case divide = "division"
+    case multiply = "multiplication"
+}
+
+// MARK: Protocols
 protocol Conv_Protocol {
     var conversion: [Conversion] { get set }
     func create(_ conversion: Conversion)
 }
 
-// MARK: Struct
+// MARK: Structs
 /// Create multiple conversions in one
 struct SubConversion: Identifiable, Hashable {
     var id = UUID()
-    var unitName: [String]
+    var subUnitName: [String]
     var factor: [Float]
     var operation: Operations
 }
 
 // MARK: Classes
 /// Ouline of a Conversion
-class Conversion: Identifiable {
+class Conversion: Identifiable, ObservableObject {
     var id = UUID()
-    var title: String
+    @Published var title: String
     var unitName: String
     var subConversion: SubConversion
     init(title: String, unitName: String, subConversion: SubConversion) {
@@ -57,13 +65,6 @@ class Conversion: Identifiable {
         self.title = title
         self.unitName = unitName
     }
-}
-
-enum Operations: String, CaseIterable, Equatable {
-    case add = "addition"
-    case subtract = "subtraction"
-    case divide = "division"
-    case multiply = "multiplication"
 }
 
 ///Used for creating personal conversions
