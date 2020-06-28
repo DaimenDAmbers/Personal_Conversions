@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,12 +22,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView()
+        let context = persistentContainer.viewContext
+        let contextView = contentView.environment(\.managedObjectContext, context)
         let personal = Personal()
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: contentView.environmentObject(personal))
+            window.rootViewController = UIHostingController(rootView: contextView.environmentObject(personal))
             self.window = window
             window.makeKeyAndVisible()
         }
@@ -58,6 +61,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+        saveContext()
+    }
+    
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "PersonalConversions")
+        container.loadPersistentStores { _, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+        return container
+    }()
+    
+    func saveContext() {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                //Add error handling
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
     }
 
 

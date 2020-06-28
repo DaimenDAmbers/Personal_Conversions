@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var personal: Personal
+
     var body: some View {
         TabView {
             PersonalView()
@@ -17,17 +18,20 @@ struct ContentView: View {
                     Image(systemName: "person")
                     Text("Personal")
             }
+//            Divider()
             UniversalView()
                 .tabItem {
                     Image(systemName: "globe")
                     Text("Universal")
             }
         }
+        .font(.headline)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(Personal())
     }
 }
