@@ -20,12 +20,12 @@ struct EditConversionView: View {
                 }
                 
                 Section(header: Text("Conversion Unit Name")) {
-                    TextField("\(conversion.unitName)", text: $conversion.unitName)                        
+                    TextField("\(conversion.unitName)", text: $conversion.unitName)
                 }
                 
                 Section(header: Text("Conversions")) {
                     List {
-                        ForEach(0 ..< conversion.subConversion.subUnitName.count) { item in
+                        ForEach(conversion.subConversions.indices, id: \.self) { idx in
                             HStack {
                                 Button(action: {
                                     // Minus button
@@ -35,7 +35,7 @@ struct EditConversionView: View {
                                     Image(systemName: "minus.circle.fill")
                                         .foregroundColor(.red)
                                 }
-                                TextField("\(self.conversion.subConversion.subUnitName[item])", text: self.$conversion.subConversion.subUnitName[item])
+                                TextField("\(self.conversion.subConversions[idx].subUnitName)", text: self.$conversion.subConversions[idx].subUnitName)
                             }
                         }
                         .onDelete(perform: deleteRow)
@@ -65,13 +65,13 @@ struct EditConversionView: View {
 
     
     private func addRow() {
-        conversion.subConversion.subUnitName.append("Value")
+        self.conversion.subConversions.append(SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
     }
     
     //Need to fix deleting rows in edit
     // Will need to rethink how subconversion works
     private func deleteRow(at offsets: IndexSet) {
-        conversion.subConversion.subUnitName.remove(atOffsets: offsets)
+        self.conversion.subConversions.remove(atOffsets: offsets)
     }
     
     
@@ -115,6 +115,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversion: SubConversion(subUnitName: ["Miles"], factor: [2], operation: .multiply))))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversions: [SubConversion(subUnitName: "Miles", factor: 2, operation: .multiply)])))
     }
 }

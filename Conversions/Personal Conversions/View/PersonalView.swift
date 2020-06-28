@@ -28,6 +28,7 @@ struct PersonalView: View {
                 .onMove(perform: move)
                 .onDelete(perform: delete)
             }
+            
             .listStyle(GroupedListStyle())
             .navigationBarTitle("Personal")
             .navigationBarItems(

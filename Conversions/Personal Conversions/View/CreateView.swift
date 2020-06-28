@@ -15,13 +15,14 @@ struct NewConversion {
     var factor: [Float]
     var unitName: String
     var subUnitName: [String]
+    var subConversions: [SubConversion]
 }
 
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     
-    @State var newConversion = NewConversion(title: "", operation: 0, factor: [1.00], unitName: "", subUnitName: [""])
+    @State var newConversion = NewConversion(title: "", operation: 0, factor: [1.00], unitName: "", subUnitName: [""], subConversions: [SubConversion(subUnitName: "", factor: 1.00, operation: .multiply)])
     
     @State private var subConversion: [Int] = [0]
     private static var count = 0
@@ -37,8 +38,10 @@ struct CreateView: View {
             Form {
                 
                 // MARK: Conversion Name
-                TextField("Conversion name", text: $newConversion.title)
-                    .disableAutocorrection(true)
+                Section {
+                    TextField("Conversion name", text: $newConversion.title)
+                        .disableAutocorrection(true)
+                }
                 
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
@@ -57,14 +60,14 @@ struct CreateView: View {
                 }) {
                     
                     List {
-                        ForEach(subConversion, id: \.self) { item in
-                            SubConversionView(toValue: self.$newConversion.subUnitName[item], factor: self.$newConversion.factor[item])
+                        ForEach(self.newConversion.subConversions.indices, id: \.self) { index in
+                            SubConversionView(subConversion: self.$newConversion.subConversions[index])
                         }
                         .onDelete(perform: deleteConvertTo)
                         
-                        // Button to add new row
+//                         Button to add new row
                         Button(action: {
-                            self.addItem()
+                            self.addRow()
                         }) {
                             HStack {
                                 Spacer()
@@ -99,68 +102,53 @@ struct CreateView: View {
     }
     
     /// Adds a new items to the conver to value
-    private func addItem() {
-        self.newConversion.factor.append(1.00)
-        self.newConversion.subUnitName.append("")
-        Self.count += 1
-        self.subConversion.append(Self.count)
+    private func addRow() {
+        self.newConversion.subConversions.append(SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
     }
     
-    /// Cancels the form
+    /// Cancels the form and dismisses CreateView modal
     private func cancelForm() {
         self.isPresented.wrappedValue.dismiss()
         print("Cancel Form")
     }
     
     
-    /// Saves the form
+    /// Saves the form and dismisses CreateView modal
     private func saveForm() {
-        let subConversion = SubConversion(subUnitName: self.newConversion.subUnitName, factor: self.newConversion.factor, operation: self.operations[self.newConversion.operation])
-        let conversion = Conversion(title: self.newConversion.title, unitName: self.newConversion.unitName, subConversion: subConversion)
+        let conversion = Conversion(title: self.newConversion.title, unitName: self.newConversion.unitName, subConversions: self.newConversion.subConversions)
         self.personal.create(conversion)
-        Self.count = 0
-        print(subConversion)
-        print(conversion)
+        print(conversion.subConversions[0].factor)
         print("Save Form")
         self.isPresented.wrappedValue.dismiss()
     }
     
     private func deleteConvertTo(at offsets: IndexSet) {
-        if(Self.count >= 0) {
-            print(offsets)
-            Self.count -= 1
-            subConversion.remove(atOffsets: offsets)
-//            factor.remove(atOffsets: offsets)
-//            toValue.remove(atOffsets: offsets)
-        } else {
-            Self.count = 0
-        }
+//        conversion.subConversions.remove(atOffsets: offsets)
     }
 }
 
 struct SubConversionView: View, Identifiable {
     let id = UUID()
-    @Binding var toValue: String
-    @Binding var factor: Float
+    @Binding var subConversion: SubConversion
     
     var body: some View {
         HStack {
-            TextField("Value", text: self.$toValue)
+            TextField("Value", text: self.$subConversion.subUnitName)
                 .disableAutocorrection(true)
                 .multilineTextAlignment(/*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
             
             Divider()
             
-            TextField("", value: self.$factor, formatter: NumberFormatter()){
+            TextField("", value: self.$subConversion.factor, formatter: NumberFormatter()){
                 UIApplication.shared.endEditing() //Should dismiss keyboard on tap gesture
             }
-            .keyboardType(.decimalPad)
+//            .keyboardType(.decimalPad)
             .multilineTextAlignment(.center)
             
-            Stepper(value: self.$factor, in: -1_000...1_000) {
-                Text("\(self.factor, specifier: "%.2f")")
-            }
-            .labelsHidden()
+//            Stepper(value: self.$subConversion.factor, in: -1_000...1_000) {
+//                Text("\(self.subConversion.factor, specifier: "%.2f")")
+//            }
+//            .labelsHidden()
         }
         .onTapGesture {
             self.endEditing()

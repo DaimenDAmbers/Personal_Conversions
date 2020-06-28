@@ -32,27 +32,31 @@ protocol Conv_Protocol {
 
 // MARK: Structs
 /// Create multiple conversions in one
+/// - Parameters:
+///     - subUnitName:
+///     - factor:
+///     - operation:
 struct SubConversion: Identifiable, Hashable {
     var id = UUID()
-    var subUnitName: [String]
-    var factor: [Float]
+    var subUnitName: String
+    var factor: Float
     var operation: Operations
 }
 
 // MARK: Classes
 /// Ouline of a Conversion
-class Conversion: Identifiable, ObservableObject {
+struct Conversion: Identifiable {
     var id = UUID()
-    @Published var title: String
+    var title: String
     var unitName: String
-    var subConversion: SubConversion
-    init(title: String, unitName: String, subConversion: SubConversion) {
+    var subConversions: [SubConversion]
+    init(title: String, unitName: String, subConversions: [SubConversion]) {
         self.title = title
         self.unitName = unitName
-        self.subConversion = subConversion
+        self.subConversions = subConversions
     }
 
-    func saveEdits(title: String, unitName: String) throws {
+    mutating func saveEdits(title: String, unitName: String) throws {
         let emptyString = String()
         guard title != emptyString else {
             throw ConversionError.emptyTitle

@@ -30,7 +30,7 @@ struct DetailView: View {
                 Text(conversion.unitName)
                     .font(.title)
                 
-                ConvsersionListView(subConversion: conversion.subConversion, intInput: userInput)
+                ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
             }
         }
         .keyboardAdaptive()
@@ -62,16 +62,16 @@ struct DetailView: View {
 }
 
 struct ConvsersionListView: View {
-    var subConversion: SubConversion
-    var intInput: Float
+    var subConversions: [SubConversion]
+    var userInput: Float
     
     var body: some View {
         List {
-            ForEach(0 ..< subConversion.subUnitName.count) { item in
+            ForEach(subConversions) { item in
                 HStack {
-                    Text("\(self.subConversion.subUnitName[item])")
+                    Text("\(item.subUnitName)")
                     Spacer()
-                    Text(String(self.result(input: self.intInput, factor: self.subConversion.factor[item], operation: self.subConversion.operation)))
+                    Text(String(self.result(input: self.userInput, factor: item.factor, operation: item.operation)))
                 }
             }
         }
@@ -109,6 +109,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversion: SubConversion(subUnitName: ["Test"], factor: [2], operation: .multiply)))
+        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversions: [SubConversion(subUnitName: "Test", factor: 2, operation: .multiply)]))
     }
 }
