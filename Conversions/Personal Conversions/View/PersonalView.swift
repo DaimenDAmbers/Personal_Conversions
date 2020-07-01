@@ -13,8 +13,9 @@ import CoreData
 /// The view to show every personal conversion
 struct PersonalView: View {
     @EnvironmentObject var personal: Personal
-    @Environment(\.managedObjectContext) var moc
+//    @Environment(\.managedObjectContext) var moc
     @State private var showCreateView = false
+    @State private var editMode: EditMode = .inactive
     
 //    @FetchRequest(entity: SavedConversion.entity(), sortDescriptors: []) var conversion: FetchedResults<SavedConversion>
     
@@ -37,7 +38,7 @@ struct PersonalView: View {
                                                 Spacer()
                                                 Text("Share")
                                             }
-                                        
+                                            
                                         }
                                     }
                             }
@@ -57,11 +58,12 @@ struct PersonalView: View {
                         Image(systemName: "plus.circle")
                             .font(.system(size: 20))
                 })
+                    .environment(\.editMode, $editMode)
             } else {
                 Placeholder(showCreateView: $showCreateView)
                     .navigationBarTitle("Personal Conversions")
                     .navigationBarItems(
-                        leading: EditButton(),
+                        leading: EditButton().disabled(true),
                         trailing: Button(action: {
                             //Creates a new conversion
                             self.showCreateView.toggle()
@@ -69,18 +71,35 @@ struct PersonalView: View {
                             Image(systemName: "plus.circle")
                                 .font(.system(size: 20))
                     })
+                .environment(\.editMode, $editMode)
             }
         }.sheet(isPresented: $showCreateView) {
             CreateView(personal: self.personal)
         }
     }
-    
+
     func delete(at offsets: IndexSet) {
         personal.conversion.remove(atOffsets: offsets)
+        if personal.conversion.isEmpty {
+            editMode = .inactive
+        }
     }
-    
+
     func move(from source: IndexSet, to destination: Int) {
         personal.conversion.move(fromOffsets: source, toOffset: destination)
+    }
+}
+
+struct AddConversionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .frame(minWidth: 0, maxWidth: .infinity)
+            .padding()
+            .foregroundColor(.white)
+            .background(Color(.systemBlue))
+            .cornerRadius(15)
+            .padding(.horizontal, 40)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
     }
 }
 
@@ -93,6 +112,7 @@ struct Placeholder: View {
             Text("Add a conversion")
                 .font(.headline)
         }
+    .buttonStyle(AddConversionButtonStyle())
     }
 }
 
