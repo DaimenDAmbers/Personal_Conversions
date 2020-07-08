@@ -65,7 +65,7 @@ struct EditConversionView: View {
 
     
     private func addRow() {
-        self.conversion.subConversions.append(SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
+        self.conversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
     }
     
     //Need to fix deleting rows in edit
@@ -115,6 +115,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversions: [SubConversion(subUnitName: "Miles", factor: 2, operation: .multiply)])))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Miles", factor: 2, operation: .multiply)])))
     }
 }

@@ -62,7 +62,7 @@ struct DetailView: View {
 }
 
 struct ConvsersionListView: View {
-    var subConversions: [SubConversion]
+    var subConversions: [Conversion.SubConversion]
     var userInput: Float
     
     var body: some View {
@@ -109,6 +109,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversions: [SubConversion(subUnitName: "Test", factor: 2, operation: .multiply)]))
+        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2, operation: .multiply)]))
     }
 }

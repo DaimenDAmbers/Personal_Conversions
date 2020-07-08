@@ -15,14 +15,14 @@ struct NewConversion {
     var factor: [Float]
     var unitName: String
     var subUnitName: [String]
-    var subConversions: [SubConversion]
+    var subConversions: [Conversion.SubConversion]
 }
 
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     
-    @State var newConversion = NewConversion(title: "", operation: 0, factor: [1.00], unitName: "", subUnitName: [""], subConversions: [SubConversion(subUnitName: "", factor: 1.00, operation: .multiply)])
+    @State private var newConversion = Conversion(title: "", unitName: "", subConversions: [Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply)])
     
     @State private var subConversion: [Int] = [0]
     private static var count = 0
@@ -82,7 +82,7 @@ struct CreateView: View {
                 // MARK: - Conversion Operator
                 // Conversion will always be a multiple of the original input
                 Section(header: Text("Operator")) {
-                    Picker(selection: $newConversion.operation, label: Text("Operation")) {
+                    Picker(selection: $newConversion.subConversions[0].operation, label: Text("Operation")) {
                         ForEach(0 ..< operations.count) { index in
                             Text("\(self.operations[index].rawValue)")
                         }
@@ -103,7 +103,7 @@ struct CreateView: View {
     
     /// Adds a new items to the conver to value
     private func addRow() {
-        self.newConversion.subConversions.append(SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
+        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
     }
     
     /// Cancels the form and dismisses CreateView modal
@@ -129,7 +129,7 @@ struct CreateView: View {
 
 struct SubConversionView: View, Identifiable {
     let id = UUID()
-    @Binding var subConversion: SubConversion
+    @Binding var subConversion: Conversion.SubConversion
     
     var body: some View {
         HStack {

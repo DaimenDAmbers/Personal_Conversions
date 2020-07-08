@@ -14,6 +14,8 @@ import SwiftUI
 enum ConversionError: Error {
     case emptyTitle
     case emptyUnitName
+    case emptyValueName
+    case zerofactor
 }
 
 // MARK: Enummerations
@@ -31,21 +33,21 @@ protocol Conv_Protocol {
 }
 
 // MARK: Structs
-/// Create multiple conversions in one
-/// - Parameters:
-///     - subUnitName:
-///     - factor:
-///     - operation:
-struct SubConversion: Identifiable, Hashable {
-    var id = UUID()
-    var subUnitName: String
-    var factor: Float
-    var operation: Operations
-}
-
-// MARK: Classes
 /// Ouline of a Conversion
 struct Conversion: Identifiable {
+    
+    /// Create multiple conversions in one
+    /// - Parameters:
+    ///     - subUnitName:
+    ///     - factor:
+    ///     - operation:
+    struct SubConversion: Identifiable, Hashable {
+        var id = UUID()
+        var subUnitName: String
+        var factor: Float
+        var operation: Operations
+    }
+    
     var id = UUID()
     var title: String
     var unitName: String
@@ -66,11 +68,20 @@ struct Conversion: Identifiable {
             throw ConversionError.emptyUnitName
         }
         
+//        guard valueName != emptyString else {
+//            throw ConversionError.emptyValueName
+//        }
+//        
+//        guard factor != emptyString else {
+//            throw ConversionError.zerofactor
+//        }
+        
         self.title = title
         self.unitName = unitName
     }
 }
 
+// MARK: Classes
 ///Used for creating personal conversions
 class Personal: Conv_Protocol, ObservableObject, Identifiable {
     var id = UUID()
