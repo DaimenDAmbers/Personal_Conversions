@@ -27,7 +27,7 @@ struct CreateView: View {
     @State private var subConversion: [Int] = [0]
     private static var count = 0
     
-    @State private var showPopover: Bool = false
+    @State private var showHelp: Bool = false
     
     var operations: [Operations] = [.multiply, .divide]
     let lowLimit: Float = -1_000
@@ -52,12 +52,16 @@ struct CreateView: View {
                 // MARK: - Convert to values
                 Section(header: Button(action: {
                     // Information
-//                    self.showPopover = true
+                    self.showHelp = true
                 }) {
                     Text("What value(s) are you converting to?")
                         .foregroundColor(.secondary)
                     Image(systemName: "info.circle")
-                }) {
+                    }
+                .alert(isPresented: $showHelp) {
+                    Alert(title: Text("Example"), message: Text("If you are converting from inches to feet, the converting value here will be 12."))
+                    }
+                ) {
                     
                     List {
                         ForEach(self.newConversion.subConversions.indices, id: \.self) { index in
@@ -98,7 +102,6 @@ struct CreateView: View {
                 trailing: Button("Save") { self.saveForm() }
             )
         }
-        
     }
     
     /// Adds a new items to the conver to value
