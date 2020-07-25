@@ -36,16 +36,18 @@ protocol Conv_Protocol {
 /// Ouline of a Conversion
 struct Conversion: Identifiable {
     
-    /// Create multiple conversions in one
-    /// - Parameters:
-    ///     - subUnitName:
-    ///     - factor:
-    ///     - operation:
+    /// Create multiple conversions that is converted from the unit.
     struct SubConversion: Identifiable, Hashable {
         var id = UUID()
         var subUnitName: String
         var factor: Float
         var operation: Operations
+        var result: Float? = nil
+        
+        mutating func calcResult(input: Float) {
+            let output = input * factor
+            self.result = output
+        }
     }
     
     var id = UUID()

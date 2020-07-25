@@ -20,16 +20,24 @@ struct DetailView: View {
     @State var conversion: Conversion
     
     var body: some View {
-        return NavigationView {
+        VStack {
             VStack {
                 TextField("", value: $userInput, formatter: NumberFormatter())
                     .multilineTextAlignment(.center)
                     .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
-//                    .keyboardType(.decimalPad)
+                    .foregroundColor(.white)
+                //                    .keyboardType(.decimalPad)
                 
                 Text(conversion.unitName)
                     .font(.title)
+                    .foregroundColor(.white)
                 
+            }
+            .background(Color.blue)
+            .cornerRadius(15)
+            .padding()
+            
+            VStack {
                 ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
             }
         }
@@ -87,18 +95,18 @@ struct ConvsersionListView: View {
      */
     func result(input: Float?, factor: Float, operation: Operations) -> Float {
         let output: Float
-        guard input != nil else {
+        guard let input = input else {
             return 0
         }
         switch operation {
         case .add:
-            output = input! + factor
+            output = input + factor
         case .subtract:
-            output = input! - factor
+            output = input - factor
         case .multiply:
-            output = input! * factor
+            output = input * factor
         case .divide:
-            output = input! / factor
+            output = input / factor
         }
         print("input: \(input as Any), operation: \(operation), output: \(output)")
         return output
