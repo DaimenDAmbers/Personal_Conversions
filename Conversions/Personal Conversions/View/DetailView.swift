@@ -31,15 +31,10 @@ struct DetailView: View {
                 Text(conversion.unitName)
                     .font(.title)
                     .foregroundColor(.white)
-                
             }
             .background(Color.blue)
-            .cornerRadius(15)
-            .padding()
-            
-            VStack {
-                ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
-            }
+
+            ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
         }
         .keyboardAdaptive()
         .sheet(isPresented: $showingEditModal) {
@@ -83,6 +78,7 @@ struct ConvsersionListView: View {
                 }
             }
         }
+        .listStyle(GroupedListStyle())
     }
     
     /**
