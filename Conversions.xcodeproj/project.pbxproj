@@ -53,6 +53,7 @@
 		D311A16E246CEF9A00C64A6F /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		D315166B246B34D000444FAF /* PersonalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalView.swift; sourceTree = "<group>"; };
 		D315166D246B34E700444FAF /* UniversalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalView.swift; sourceTree = "<group>"; };
+		D32BD24A24D705CA00EBA865 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D3336E2724A93ED800E89A5A /* Conversions.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Conversions.xcdatamodel; sourceTree = "<group>"; };
 		D337244F247E04F4004BC65C /* PersonalTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalTest.swift; sourceTree = "<group>"; };
 		D3372453247F5A3E004BC65C /* KeyboardAdaptive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAdaptive.swift; sourceTree = "<group>"; };
@@ -83,6 +84,7 @@
 		D3073DAD24678E0200FB2217 = {
 			isa = PBXGroup;
 			children = (
+				D32BD24A24D705CA00EBA865 /* README.md */,
 				D3073DB824678E0200FB2217 /* Conversions */,
 				D3073DCF24678E0300FB2217 /* ConversionsTests */,
 				D3073DB724678E0200FB2217 /* Products */,
