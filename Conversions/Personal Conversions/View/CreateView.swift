@@ -28,8 +28,7 @@ struct CreateView: View {
     private static var count = 0
     
     @State private var showHelp: Bool = false
-    
-    var operations: [Operations] = [.multiply, .divide]
+
     let lowLimit: Float = -1_000
     let highLimit: Float = 1_000
     
@@ -81,18 +80,6 @@ struct CreateView: View {
                         }
                         .buttonStyle(BorderlessButtonStyle())
                     }
-                }
-                
-                // MARK: - Conversion Operator
-                // Conversion will always be a multiple of the original input
-                Section(header: Text("Operator")) {
-                    Picker(selection: $newConversion.subConversions[0].operation, label: Text("Operation")) {
-                        ForEach(0 ..< operations.count) { index in
-                            Text("\(self.operations[index].rawValue)")
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    
                 }
             }
             .keyboardAdaptive()
