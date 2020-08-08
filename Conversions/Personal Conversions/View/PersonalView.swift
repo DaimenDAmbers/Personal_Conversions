@@ -28,7 +28,7 @@ struct PersonalView: View {
                         NavigationLink(destination: DetailView(conversion: conversion)) {
                             Text("\(conversion.title)")
                                 .contextMenu {
-                                    Text(String(conversion.unitName))
+                                    Text(String(conversion.baseUnit))
                                     Section {
                                         Button(action: {
                                             //Share

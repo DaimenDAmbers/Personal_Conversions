@@ -41,7 +41,7 @@ struct Conversion: Identifiable {
         var id = UUID()
         var subUnitName: String
         var factor: Float
-        var operation: Operations
+//        var operation: Operations //Not needed as a parameter
         var result: Float? = nil
         
         mutating func calcResult(input: Float) {
@@ -52,21 +52,24 @@ struct Conversion: Identifiable {
     
     var id = UUID()
     var title: String
-    var unitName: String
+    var baseUnit: String
+    var baseUnitValue: Float
     var subConversions: [SubConversion]
-    init(title: String, unitName: String, subConversions: [SubConversion]) {
+    
+    init(title: String, baseUnit: String, subConversions: [SubConversion]) {
         self.title = title
-        self.unitName = unitName
+        self.baseUnit = baseUnit
         self.subConversions = subConversions
+        self.baseUnitValue = 1
     }
 
-    mutating func saveEdits(title: String, unitName: String) throws {
+    mutating func saveEdits(title: String, baseUnit: String) throws {
         let emptyString = String()
         guard title != emptyString else {
             throw ConversionError.emptyTitle
         }
         
-        guard unitName != emptyString else {
+        guard baseUnit != emptyString else {
             throw ConversionError.emptyUnitName
         }
         
@@ -79,7 +82,7 @@ struct Conversion: Identifiable {
 //        }
         
         self.title = title
-        self.unitName = unitName
+        self.baseUnit = baseUnit
     }
 }
 

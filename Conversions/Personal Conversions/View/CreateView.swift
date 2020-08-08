@@ -15,17 +15,41 @@ struct NewConversion {
     var factor: [Float]
     var unitName: String
     var subUnitName: [String]
-    var subConversions: [Conversion.SubConversion]
+    var subConversions: [Binding<Conversion.SubConversion>]
+}
+struct SubUnits: Identifiable, Hashable {
+    var id: Int
+    @State var subUnitName = ""
+    var hashValue: Int {
+        return self.id
+    }
+    static func == (lhs: SubUnits, rhs: SubUnits) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+struct Unit: Identifiable {
+    var id = UUID()
+    var unitName = ""
+//    var subUnit = [SubUnits()]
+    var subUnit = [
+        SubUnits(id: 1, subUnitName: "Name"),
+        SubUnits(id: 2, subUnitName: "Last")
+    ]
 }
 
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     
-    @State private var newConversion = Conversion(title: "", unitName: "", subConversions: [Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply)])
+    @State private var newConversion = Conversion(title: "", baseUnit: "", subConversions: [Conversion.SubConversion(subUnitName: "", factor: 1.00)])
     
-    @State private var subConversion: [Int] = [0]
-    private static var count = 0
+    @State private var testConversion = Conversion.SubConversion(subUnitName: "", factor: 1.00)
+    @State private var count = [Int]() //Counts the number of subconversions
+    @State private var currentNumber = 1
+    
+    @State private var unit = Unit()
+    
+    @State private var subUnitValue = [String]()
     
     @State private var showHelp: Bool = false
 
@@ -44,7 +68,7 @@ struct CreateView: View {
                 
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
-                    TextField("Meters, Kilograms, etc.", text: $newConversion.unitName)
+                    TextField("Meters, Kilograms, etc.", text: $newConversion.baseUnit)
                         .disableAutocorrection(true)
                 }
                 
@@ -66,7 +90,20 @@ struct CreateView: View {
                         ForEach(self.newConversion.subConversions.indices, id: \.self) { index in
                             SubConversionView(subConversion: self.$newConversion.subConversions[index])
                         }
-                        .onDelete(perform: deleteConvertTo)
+                        .onDelete(perform: deleteRow)
+//                        ForEach(self.count, id: \.self) {
+////                            TextField("", text: self.$subUnitValue[self.count.capacity])
+////                            TextField(Text(""), text: self.$subUnitValue[0])
+//                            Text("\($0)")
+//                            TextField("", text: self.$subUnitValue[0])
+//                        }
+//                        .onDelete(perform: deleteRow)
+//                        ForEach(self.unit.subUnit, id: \.self) { subUnit in
+//                            TextField("Name", text: subUnit.$subUnitName, onCommit: {
+//                                let name = subUnit.subUnitName
+//                                print(name)
+//                            })
+//                        }
                         
 //                         Button to add new row
                         Button(action: {
@@ -93,7 +130,11 @@ struct CreateView: View {
     
     /// Adds a new items to the conver to value
     private func addRow() {
-        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
+//        self.unit.subUnit.append(SubUnits(id: 3, subUnitName: "New"))
+        self.count.append(self.currentNumber)
+        self.currentNumber += 1
+        self.subUnitValue.append("")
+        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00))
     }
     
     /// Cancels the form and dismisses CreateView modal
@@ -105,14 +146,15 @@ struct CreateView: View {
     
     /// Saves the form and dismisses CreateView modal
     private func saveForm() {
-        let conversion = Conversion(title: self.newConversion.title, unitName: self.newConversion.unitName, subConversions: self.newConversion.subConversions)
+        let conversion = Conversion(title: self.newConversion.title, baseUnit: self.newConversion.baseUnit, subConversions: self.newConversion.subConversions)
         self.personal.create(conversion)
         print(conversion.subConversions[0].factor)
         print("Save Form")
         self.isPresented.wrappedValue.dismiss()
     }
     
-    private func deleteConvertTo(at offsets: IndexSet) {
+    private func deleteRow(at offsets: IndexSet) {
+        
 //        conversion.subConversions.remove(atOffsets: offsets)
     }
 }

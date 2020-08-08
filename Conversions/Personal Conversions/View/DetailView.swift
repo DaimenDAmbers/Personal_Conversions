@@ -28,7 +28,7 @@ struct DetailView: View {
                     .foregroundColor(.white)
                 //                    .keyboardType(.decimalPad)
                 
-                Text(conversion.unitName)
+                Text(conversion.baseUnit)
                     .font(.title)
                     .foregroundColor(.white)
             }
@@ -74,7 +74,7 @@ struct ConvsersionListView: View {
                 HStack {
                     Text("\(item.subUnitName)")
                     Spacer()
-                    Text(String(self.result(input: self.userInput, factor: item.factor, operation: item.operation)))
+                    Text(String(self.result(input: self.userInput, factor: item.factor, operation: .multiply)))
                 }
             }
         }
@@ -113,6 +113,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", unitName: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2, operation: .multiply)]))
+        DetailView(conversion: Conversion(title: "Distance", baseUnit: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2)]))
     }
 }

@@ -20,7 +20,7 @@ struct EditConversionView: View {
                 }
                 
                 Section(header: Text("Conversion Unit Name")) {
-                    TextField("\(conversion.unitName)", text: $conversion.unitName)
+                    TextField("\(conversion.baseUnit)", text: $conversion.baseUnit)
                 }
                 
                 Section(header: Text("Conversions")) {
@@ -65,7 +65,7 @@ struct EditConversionView: View {
 
     
     private func addRow() {
-        self.conversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00, operation: .multiply))
+        self.conversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00))
     }
     
     //Need to fix deleting rows in edit
@@ -86,7 +86,7 @@ struct EditConversionView: View {
             throw ConversionError.emptyTitle
         }
         
-        guard conversion.unitName != emptyString else {
+        guard conversion.baseUnit != emptyString else {
             throw ConversionError.emptyUnitName
         }
     }
@@ -94,7 +94,7 @@ struct EditConversionView: View {
     /// Adds a new items to the conver to value
     private func saveEdits() {
         do {
-            try conversion.saveEdits(title: self.conversion.title, unitName: self.conversion.unitName)
+            try conversion.saveEdits(title: self.conversion.title, baseUnit: self.conversion.baseUnit)
             self.showingEditOptions.wrappedValue.dismiss()
             print("Save Edits")
         } catch ConversionError.emptyTitle {
@@ -115,6 +115,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", unitName: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Miles", factor: 2, operation: .multiply)])))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Miles", factor: 2)])))
     }
 }
