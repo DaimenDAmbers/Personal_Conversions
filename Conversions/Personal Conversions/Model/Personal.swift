@@ -37,11 +37,10 @@ protocol Conv_Protocol {
 struct Conversion: Identifiable {
     
     /// Create multiple conversions that is converted from the unit.
-    struct SubConversion: Identifiable, Hashable {
+    struct SubConversion: Identifiable {
         var id = UUID()
         var subUnitName: String
         var factor: Float
-//        var operation: Operations //Not needed as a parameter
         var result: Float? = nil
         
         mutating func calcResult(input: Float) {
@@ -50,17 +49,20 @@ struct Conversion: Identifiable {
         }
     }
     
-    var id = UUID()
-    var title: String
-    var baseUnit: String
-    var baseUnitValue: Float
+    var id = UUID() // Used for sorting identifying each personal conversion
+    var title: String   // Name of the conversion
+    var baseUnit: String // Name of the unit we are converting from
+    var baseUnitValue: Float = 1.00 // Base unit that will be used universally for the subconversions
     var subConversions: [SubConversion]
     
     init(title: String, baseUnit: String, subConversions: [SubConversion]) {
         self.title = title
         self.baseUnit = baseUnit
         self.subConversions = subConversions
-        self.baseUnitValue = 1
+    }
+    
+    func unitConverter() {
+        
     }
 
     mutating func saveEdits(title: String, baseUnit: String) throws {

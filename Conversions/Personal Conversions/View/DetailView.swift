@@ -113,6 +113,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", baseUnit: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2)]))
+        DetailView(conversion: Conversion(title: "Distance", baseUnit: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor:   2.00)]))
     }
 }

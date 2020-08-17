@@ -94,6 +94,7 @@ struct EditConversionView: View {
     /// Adds a new items to the conver to value
     private func saveEdits() {
         do {
+            print(self.conversion.title)
             try conversion.saveEdits(title: self.conversion.title, baseUnit: self.conversion.baseUnit)
             self.showingEditOptions.wrappedValue.dismiss()
             print("Save Edits")
@@ -115,6 +116,6 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Miles", factor: 2)])))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2.00)])))
     }
 }

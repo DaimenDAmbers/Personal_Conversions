@@ -9,52 +9,17 @@
 import SwiftUI
 import Combine
 
-struct NewConversion {
-    var title: String
-    var operation: Int
-    var factor: [Float]
-    var unitName: String
-    var subUnitName: [String]
-    var subConversions: [Binding<Conversion.SubConversion>]
-}
-struct SubUnits: Identifiable, Hashable {
-    var id: Int
-    @State var subUnitName = ""
-    var hashValue: Int {
-        return self.id
-    }
-    static func == (lhs: SubUnits, rhs: SubUnits) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-struct Unit: Identifiable {
-    var id = UUID()
-    var unitName = ""
-//    var subUnit = [SubUnits()]
-    var subUnit = [
-        SubUnits(id: 1, subUnitName: "Name"),
-        SubUnits(id: 2, subUnitName: "Last")
-    ]
-}
-
 struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     
-    @State private var newConversion = Conversion(title: "", baseUnit: "", subConversions: [Conversion.SubConversion(subUnitName: "", factor: 1.00)])
+    @State private var newConversion = Conversion(title: "", baseUnit: "", subConversions: [Conversion.SubConversion(subUnitName: "Placeholder", factor: 2.00)])
     
-    @State private var testConversion = Conversion.SubConversion(subUnitName: "", factor: 1.00)
-    @State private var count = [Int]() //Counts the number of subconversions
-    @State private var currentNumber = 1
-    
-    @State private var unit = Unit()
-    
-    @State private var subUnitValue = [String]()
+    @State private var newSubConversionName: String = ""
+    @State private var newSubConversionFactor: Float = 1.00
+    @State private var showAddField: Bool = false
     
     @State private var showHelp: Bool = false
-
-    let lowLimit: Float = -1_000
-    let highLimit: Float = 1_000
     
     var body: some View {
         NavigationView {
@@ -80,42 +45,53 @@ struct CreateView: View {
                     Text("What value(s) are you converting to?")
                         .foregroundColor(.secondary)
                     Image(systemName: "info.circle")
-                    }
+                }
                 .alert(isPresented: $showHelp) {
                     Alert(title: Text("Example"), message: Text("If you are converting from inches to feet, the converting value here will be 12."))
                     }
                 ) {
                     
-                    List {
-                        ForEach(self.newConversion.subConversions.indices, id: \.self) { index in
-                            SubConversionView(subConversion: self.$newConversion.subConversions[index])
-                        }
-                        .onDelete(perform: deleteRow)
-//                        ForEach(self.count, id: \.self) {
-////                            TextField("", text: self.$subUnitValue[self.count.capacity])
-////                            TextField(Text(""), text: self.$subUnitValue[0])
-//                            Text("\($0)")
-//                            TextField("", text: self.$subUnitValue[0])
-//                        }
-//                        .onDelete(perform: deleteRow)
-//                        ForEach(self.unit.subUnit, id: \.self) { subUnit in
-//                            TextField("Name", text: subUnit.$subUnitName, onCommit: {
-//                                let name = subUnit.subUnitName
-//                                print(name)
-//                            })
-//                        }
+                    // MARK: List of Sub Conversions
+                    Group {
                         
-//                         Button to add new row
-                        Button(action: {
-                            self.addRow()
-                        }) {
-                            HStack {
-                                Spacer()
-                                Text("Add Row")
-                                Spacer()
+                        List {
+                            ForEach(self.newConversion.subConversions) { subConversion in
+                                ShowSubConversion(subConversion: subConversion)
+                            }
+                            .onDelete(perform: delete)
+                            
+                            // Button to add new row
+                            if !showAddField {
+                                Button(action: {
+                                    self.addRow()
+                                }) {
+                                    HStack {
+                                        Spacer()
+                                        Text("Add Row")
+                                        Spacer()
+                                    }
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                            } else {
+                                HStack(alignment: .center) {
+                                    TextField("Value Name", text: $newSubConversionName)
+                                        .multilineTextAlignment(.center)
+                                    Divider()
+                                    TextField("Factor", value: $newSubConversionFactor, formatter: NumberFormatter())
+                                        .multilineTextAlignment(.center)
+                                    Divider()
+                                    HStack {
+                                        Button(action: {
+                                            self.submit(name: self.newSubConversionName, factor: self.newSubConversionFactor)
+                                        }) {
+                                            Text("Submit")
+                                        }
+                                        .multilineTextAlignment(.center)
+                                        .buttonStyle(BorderlessButtonStyle())
+                                    }
+                                }
                             }
                         }
-                        .buttonStyle(BorderlessButtonStyle())
                     }
                 }
             }
@@ -127,14 +103,10 @@ struct CreateView: View {
             )
         }
     }
-    
+    // MARK: - Functions
     /// Adds a new items to the conver to value
     private func addRow() {
-//        self.unit.subUnit.append(SubUnits(id: 3, subUnitName: "New"))
-        self.count.append(self.currentNumber)
-        self.currentNumber += 1
-        self.subUnitValue.append("")
-        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00))
+        self.showAddField = true
     }
     
     /// Cancels the form and dismisses CreateView modal
@@ -153,37 +125,57 @@ struct CreateView: View {
         self.isPresented.wrappedValue.dismiss()
     }
     
-    private func deleteRow(at offsets: IndexSet) {
+    private func delete(at offsets: IndexSet) {
+        self.newConversion.subConversions.remove(atOffsets: offsets)
+    }
+    
+    private func submit(name: String, factor: Float) {
+        guard name != String() else {
+            print("Empty sub conversion name")
+            return
+        }
         
-//        conversion.subConversions.remove(atOffsets: offsets)
+        guard factor != 0 else {
+            print("Can't use zero")
+            return
+        }
+        
+        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: self.newSubConversionName, factor: Float(self.newSubConversionFactor)))
+        self.newSubConversionName = ""
+        self.newSubConversionFactor = 1.00
+        self.showAddField = false
+        
     }
 }
 
-struct SubConversionView: View, Identifiable {
-    let id = UUID()
-    @Binding var subConversion: Conversion.SubConversion
+// MARK: - Extension to allows Optional Bindings.
+extension Optional where Wrapped == String {
+    
+    var bound: String {
+        get {
+            return self ?? ""
+        }
+        set {
+            self = newValue
+        }
+    }
+}
+
+struct ShowSubConversion: View {
+    var subConversion: Conversion.SubConversion
     
     var body: some View {
         HStack {
-            TextField("Value", text: self.$subConversion.subUnitName)
-                .disableAutocorrection(true)
+            Spacer()
+            Text("\(subConversion.subUnitName)")
                 .multilineTextAlignment(/*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            //            Spacer()
+            //            Divider()
+            Spacer()
+            Text(String(format: "%.2f", subConversion.factor))
+                .multilineTextAlignment(.center)
+            Spacer()
             
-            Divider()
-            
-            TextField("", value: self.$subConversion.factor, formatter: NumberFormatter()){
-                UIApplication.shared.endEditing() //Should dismiss keyboard on tap gesture
-            }
-//            .keyboardType(.decimalPad)
-            .multilineTextAlignment(.center)
-            
-//            Stepper(value: self.$subConversion.factor, in: -1_000...1_000) {
-//                Text("\(self.subConversion.factor, specifier: "%.2f")")
-//            }
-//            .labelsHidden()
-        }
-        .onTapGesture {
-            self.endEditing()
         }
     }
     
