@@ -61,12 +61,23 @@ struct Conversion: Identifiable {
         self.subConversions = subConversions
     }
     
-    func unitConverter() {
-        
+    func unitConverter(input: Float?, subConversion: SubConversion) -> Float {
+        let factor: Float = subConversion.factor
+        guard let input = input else {
+            return 0
+        }
+        let output: Float
+
+        // multiply
+        output = factor * baseUnitValue * input
+        // divide
+//        output = baseUnitValue / input
+        return output
     }
 
     mutating func saveEdits(title: String, baseUnit: String) throws {
         let emptyString = String()
+//        let zeroFactor: Float = 0
         guard title != emptyString else {
             throw ConversionError.emptyTitle
         }
@@ -75,13 +86,14 @@ struct Conversion: Identifiable {
             throw ConversionError.emptyUnitName
         }
         
-//        guard valueName != emptyString else {
+//        guard subConversion.subUnitName != emptyString else {
 //            throw ConversionError.emptyValueName
 //        }
-//        
-//        guard factor != emptyString else {
+//
+//        guard subConversion.factor != zeroFactor else {
 //            throw ConversionError.zerofactor
 //        }
+       
         
         self.title = title
         self.baseUnit = baseUnit

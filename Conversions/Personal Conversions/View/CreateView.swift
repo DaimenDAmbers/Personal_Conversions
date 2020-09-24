@@ -13,12 +13,14 @@ struct CreateView: View {
     @Environment(\.presentationMode) var isPresented // Dismissing the modal
     @ObservedObject var personal: Personal // Uses function to create a conversion
     
-    @State private var newConversion = Conversion(title: "", baseUnit: "", subConversions: [Conversion.SubConversion(subUnitName: "Placeholder", factor: 2.00)])
+    @State private var title = String()
+    @State private var baseUnit = String()
+    @State private var subUnitName = String()
+    @State private var factor = Float()
     
-    @State private var newSubConversionName: String = ""
-    @State private var newSubConversionFactor: Float = 1.00
+    @State private var subConversions: [Conversion.SubConversion]? = nil
+    
     @State private var showAddField: Bool = false
-    
     @State private var showHelp: Bool = false
     
     var body: some View {
@@ -27,13 +29,13 @@ struct CreateView: View {
                 
                 // MARK: Conversion Name
                 Section {
-                    TextField("Conversion name", text: $newConversion.title)
+                    TextField("Conversion name", text: $title)
                         .disableAutocorrection(true)
                 }
                 
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
-                    TextField("Meters, Kilograms, etc.", text: $newConversion.baseUnit)
+                    TextField("Meters, Kilograms, etc.", text: $baseUnit)
                         .disableAutocorrection(true)
                 }
                 
@@ -55,13 +57,23 @@ struct CreateView: View {
                     Group {
                         
                         List {
-                            ForEach(self.newConversion.subConversions) { subConversion in
-                                ShowSubConversion(subConversion: subConversion)
+                            if let conversions = subConversions {
+                                ForEach(conversions, id: \.id) { subConversion in
+                                    HStack {
+                                        Text(subConversion.subUnitName)
+                                        Spacer()
+                                        Text(String(format: "%.2f", subConversion.factor))
+                                    }
+
+                                }
+                                .onDelete(perform: delete)
+                                
+                            } else {
+                                EmptyView()
                             }
-                            .onDelete(perform: delete)
                             
                             // Button to add new row
-                            if !showAddField {
+                            if showAddField {
                                 Button(action: {
                                     self.addRow()
                                 }) {
@@ -74,15 +86,15 @@ struct CreateView: View {
                                 .buttonStyle(BorderlessButtonStyle())
                             } else {
                                 HStack(alignment: .center) {
-                                    TextField("Value Name", text: $newSubConversionName)
+                                    TextField("Value Name", text: $subUnitName)
                                         .multilineTextAlignment(.center)
                                     Divider()
-                                    TextField("Factor", value: $newSubConversionFactor, formatter: NumberFormatter())
+                                    TextField("Factor", value: $factor, formatter: NumberFormatter())
                                         .multilineTextAlignment(.center)
                                     Divider()
                                     HStack {
                                         Button(action: {
-                                            self.submit(name: self.newSubConversionName, factor: self.newSubConversionFactor)
+                                            self.submit(name: self.subUnitName, factor: self.factor)
                                         }) {
                                             Text("Submit")
                                         }
@@ -95,7 +107,6 @@ struct CreateView: View {
                     }
                 }
             }
-            .keyboardAdaptive()
             .navigationBarTitle(Text("New Conversion"), displayMode: .inline)
             .navigationBarItems(
                 leading: Button("Cancel") { self.cancelForm() },
@@ -103,10 +114,11 @@ struct CreateView: View {
             )
         }
     }
+   
     // MARK: - Functions
     /// Adds a new items to the conver to value
     private func addRow() {
-        self.showAddField = true
+        self.showAddField = false
     }
     
     /// Cancels the form and dismisses CreateView modal
@@ -118,7 +130,10 @@ struct CreateView: View {
     
     /// Saves the form and dismisses CreateView modal
     private func saveForm() {
-        let conversion = Conversion(title: self.newConversion.title, baseUnit: self.newConversion.baseUnit, subConversions: self.newConversion.subConversions)
+        guard let subConversions = self.subConversions else {
+            return
+        }
+        let conversion = Conversion(title: self.title, baseUnit: self.baseUnit, subConversions: subConversions)
         self.personal.create(conversion)
         print(conversion.subConversions[0].factor)
         print("Save Form")
@@ -126,9 +141,14 @@ struct CreateView: View {
     }
     
     private func delete(at offsets: IndexSet) {
-        self.newConversion.subConversions.remove(atOffsets: offsets)
+        self.subConversions?.remove(atOffsets: offsets)
     }
     
+    
+    /// Submits the new sub conversion value
+    /// - Parameters:
+    ///   - name: Name of the sub converions.
+    ///   - factor: how many of this item will make one of the value you are converting from.
     private func submit(name: String, factor: Float) {
         guard name != String() else {
             print("Empty sub conversion name")
@@ -140,47 +160,15 @@ struct CreateView: View {
             return
         }
         
-        self.newConversion.subConversions.append(Conversion.SubConversion(subUnitName: self.newSubConversionName, factor: Float(self.newSubConversionFactor)))
-        self.newSubConversionName = ""
-        self.newSubConversionFactor = 1.00
-        self.showAddField = false
+        if self.subConversions?.isEmpty == nil {
+            self.subConversions = [Conversion.SubConversion(subUnitName: self.subUnitName, factor: self.factor)]
+        } else {
+            self.subConversions?.append(Conversion.SubConversion(subUnitName: self.subUnitName, factor: factor))
+        }
         
-    }
-}
-
-// MARK: - Extension to allows Optional Bindings.
-extension Optional where Wrapped == String {
-    
-    var bound: String {
-        get {
-            return self ?? ""
-        }
-        set {
-            self = newValue
-        }
-    }
-}
-
-struct ShowSubConversion: View {
-    var subConversion: Conversion.SubConversion
-    
-    var body: some View {
-        HStack {
-            Spacer()
-            Text("\(subConversion.subUnitName)")
-                .multilineTextAlignment(/*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-            //            Spacer()
-            //            Divider()
-            Spacer()
-            Text(String(format: "%.2f", subConversion.factor))
-                .multilineTextAlignment(.center)
-            Spacer()
-            
-        }
-    }
-    
-    private func endEditing() {
-        UIApplication.shared.endEditing()
+        self.subUnitName = ""
+        self.factor = 1
+        self.showAddField = true
     }
 }
 
