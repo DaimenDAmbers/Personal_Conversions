@@ -89,8 +89,15 @@ struct CreateView: View {
                                     TextField("Value Name", text: $subUnitName)
                                         .multilineTextAlignment(.center)
                                     Divider()
-                                    TextField("Factor", value: $factor, formatter: NumberFormatter())
-                                        .multilineTextAlignment(.center)
+//                                    TextField("Factor", value: $factor, formatter: NumberFormatter())
+//                                        .multilineTextAlignment(.center)
+//                                        .keyboardType(.decimalPad)
+                                    TestTextfield(factor: $factor, keyType: UIKeyboardType.decimalPad)
+                                           .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                           .overlay(
+                                               RoundedRectangle(cornerRadius: 16)
+                                                   .stroke(Color.blue, lineWidth: 4)
+                                       )
                                     Divider()
                                     HStack {
                                         Button(action: {
@@ -172,19 +179,38 @@ struct CreateView: View {
     }
 }
 
-extension UIApplication {
-    func endEditing() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
+struct TestTextfield: UIViewRepresentable {
+   @Binding var factor: Float
+   var keyType: UIKeyboardType
+   func makeUIView(context: Context) -> UITextField {
+       let textfield = UITextField()
+     textfield.keyboardType = keyType
+       let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textfield.frame.size.width, height: 44))
+       let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(textfield.doneButtonTapped(button:)))
+       toolBar.items = [doneButton]
+       toolBar.setItems([doneButton], animated: true)
+       textfield.inputAccessoryView = toolBar
+       return textfield
+   }
+
+   func updateUIView(_ uiView: UITextField, context: Context) {
+    uiView.floatValue = factor
+
+   }
 }
 
-#if canImport(UIKit)
-extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
+extension UITextField {
+    var floatValue: Float {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        
+        let nsNumber = numberFormatter.number(from: text!)
+        return nsNumber == nil ? 0.0 : nsNumber!.floatValue
+//   @objc func doneButtonTapped(button:UIBarButtonItem) -> Void {
+//      self.resignFirstResponder()
+   }
+
 }
-#endif
 
 struct CreateView_Previews: PreviewProvider {
     static var previews: some View {
