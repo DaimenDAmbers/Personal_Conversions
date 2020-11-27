@@ -13,9 +13,11 @@ import SwiftUI
 struct DecimalKeypad: UIViewRepresentable {
     @Binding var factor: Float
     private var placeHolder: String
+    private var textColor: UIColor
     
-    init(_ placeHolder: String, text: Binding<Float>) {
+    init(_ placeHolder: String, textColor: UIColor, text: Binding<Float>) {
         self.placeHolder = placeHolder
+        self.textColor = textColor
         self._factor = text
     }
     
@@ -23,7 +25,11 @@ struct DecimalKeypad: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextField {
         let textfield = UITextField()
         textfield.keyboardType = .decimalPad
+        textfield.placeholder = placeHolder
         textfield.textAlignment = .center
+        textfield.textColor = textColor
+        textfield.font = .systemFont(ofSize: 50)
+        
         textfield.delegate = context.coordinator
         let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textfield.frame.size.width, height: 44))
         let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(textfield.doneButtonTapped(button:)))
@@ -74,20 +80,8 @@ extension  UITextField {
 
 }
 
-struct Example: UIViewRepresentable {
-    @Binding var text: String
-    var type: UIKeyboardType
-    
-    func makeUIView(context: Context) -> UITextField {
-        let field = UITextField()
-        field.keyboardType = type
-        return field
-    
-    }
-    
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        uiView.text = text
+struct Keyboard_Previews: PreviewProvider {
+    static var previews: some View {
+        /*@START_MENU_TOKEN@*/Text("Hello, World!")/*@END_MENU_TOKEN@*/
     }
 }
-
-

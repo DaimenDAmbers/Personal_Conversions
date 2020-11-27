@@ -22,33 +22,31 @@ struct DetailView: View {
     var body: some View {
         VStack {
             VStack {
-                TextField("", value: $userInput, formatter: NumberFormatter())
-                    .multilineTextAlignment(.center)
-                    .font(/*@START_MENU_TOKEN@*/.largeTitle/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(.white)
-                //                    .keyboardType(.decimalPad)
+                DecimalKeypad("0.0", textColor: UIColor.green, text: $userInput)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                 
                 Text(conversion.baseUnit)
                     .font(.title)
                     .foregroundColor(.white)
+                
+                ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
             }
-            .background(Color.blue)
-
-            ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
         }
-        .keyboardAdaptive()
+        
+        .background(Color.gray)
         .sheet(isPresented: $showingEditModal) {
             EditConversionView(conversion: self.$conversion)
         }
+        
         .navigationBarTitle(Text("\(conversion.title)"), displayMode: .inline)
         .navigationBarItems(trailing:
-            Button(action: {
-                self.showingActionSheet = true
-                print("Edit button")
-            }) {
-                Image(systemName: "ellipsis.circle")
-                    .font(.system(size: 20))
-            }
+                                Button(action: {
+                                    self.showingActionSheet = true
+                                    print("Edit button")
+                                }) {
+                                    Image(systemName: "ellipsis.circle")
+                                        .font(.system(size: 20))
+                                }
             .actionSheet(isPresented: $showingActionSheet) {
                 ActionSheet(title: Text("What would you like to do?"),
                             buttons: [
@@ -58,7 +56,7 @@ struct DetailView: View {
                                 },
                                 .destructive(Text("Delete")),
                                 .cancel()
-                ])
+                            ])
             }
         )
     }
