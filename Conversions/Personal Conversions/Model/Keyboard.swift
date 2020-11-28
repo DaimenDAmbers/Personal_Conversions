@@ -14,10 +14,12 @@ struct DecimalKeypad: UIViewRepresentable {
     @Binding var factor: Float
     private var placeHolder: String
     private var textColor: UIColor
+    private var fontSize: CGFloat
     
-    init(_ placeHolder: String, textColor: UIColor, text: Binding<Float>) {
+    init(_ placeHolder: String, textColor: UIColor, fontSize: CGFloat, text: Binding<Float>) {
         self.placeHolder = placeHolder
         self.textColor = textColor
+        self.fontSize = fontSize
         self._factor = text
     }
     
@@ -28,7 +30,7 @@ struct DecimalKeypad: UIViewRepresentable {
         textfield.placeholder = placeHolder
         textfield.textAlignment = .center
         textfield.textColor = textColor
-        textfield.font = .systemFont(ofSize: 50)
+        textfield.font = .systemFont(ofSize: fontSize)
         
         textfield.delegate = context.coordinator
         let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textfield.frame.size.width, height: 44))

@@ -22,7 +22,7 @@ struct DetailView: View {
     var body: some View {
         VStack {
             VStack {
-                DecimalKeypad("0.0", textColor: UIColor.green, text: $userInput)
+                DecimalKeypad("0.0", textColor: UIColor.green, fontSize: 50, text: $userInput)
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                 
                 Text(conversion.baseUnit)

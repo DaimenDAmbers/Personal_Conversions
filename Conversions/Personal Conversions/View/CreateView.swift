@@ -94,7 +94,7 @@ struct CreateView: View {
 //                                    TextField("Factor", value: $factor, formatter: NumberFormatter())
 //                                        .multilineTextAlignment(.center)
 //                                        .keyboardType(.decimalPad)
-                                    DecimalKeypad("0.0", textColor: UIColor.white, text: $factor)
+                                    DecimalKeypad("0.0", textColor: UIColor.black, fontSize: 20, text: $factor)
 //                                        .multilineTextAlignment(.center)
                                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                                     Divider()

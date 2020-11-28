@@ -25,29 +25,56 @@ struct PersonalView: View {
                 List {
                     // Detail view should list all personal coneversions
                     ForEach(personal.conversion) { conversion in
-                        NavigationLink(destination: DetailView(conversion: conversion)) {
-                            Text("\(conversion.title)")
-                                .contextMenu {
-                                    Text(String(conversion.baseUnit))
-                                    Section {
-                                        Button(action: {
-                                            //Share
-                                        }) {
-                                            HStack {
-                                                Image(systemName: "square.and.arrow.up")
-                                                Spacer()
-                                                Text("Share")
-                                            }
-                                            
-                                        }
+                        HStack {
+                            NavigationLink(destination: DetailView(conversion: conversion)) {
+                                
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 50, height: 50, alignment: .center)
+                                    if #available(iOS 14.0, *) {
+                                        Text(conversion.title.prefix(1))
+                                            .foregroundColor(Color.black)
+                                            .textCase(.uppercase)
+                                            .font(.system(size: 17, weight: .heavy))
+                                    } else {
+                                        // Fallback on earlier versions
                                     }
+                                }
+                                
+                                VStack (alignment: .leading) {
+                                    Text("\(conversion.title)")
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 17, weight: .heavy))
+                                        .contextMenu {
+                                            Text(String(conversion.baseUnit))
+                                            Section {
+                                                Button(action: {
+                                                    //Share
+                                                }) {
+                                                    HStack {
+                                                        Image(systemName: "square.and.arrow.up")
+                                                        Spacer()
+                                                        Text("Share")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    Text(conversion.baseUnit)
+                                        .font(.caption)
+                                }
+                                Spacer()
                             }
+                            
                         }
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                        .shadow(radius: 8)
                     }
                     .onMove(perform: move)
                     .onDelete(perform: delete)
                 }
-                .listStyle(GroupedListStyle())
                 .navigationBarTitle("Personal Conversions")
                 .navigationBarItems(
                     leading: EditButton(),
