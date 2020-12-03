@@ -30,7 +30,7 @@ struct DecimalKeypad: UIViewRepresentable {
         textfield.placeholder = placeHolder
         textfield.textAlignment = .center
         textfield.textColor = textColor
-        textfield.font = .systemFont(ofSize: fontSize)
+        textfield.font = .systemFont(ofSize: fontSize, weight: .bold)
         
         textfield.delegate = context.coordinator
         let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: textfield.frame.size.width, height: 44))

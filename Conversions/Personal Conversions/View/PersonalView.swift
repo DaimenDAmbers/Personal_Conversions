@@ -27,45 +27,47 @@ struct PersonalView: View {
                     ForEach(personal.conversion) { conversion in
                         HStack {
                             NavigationLink(destination: DetailView(conversion: conversion)) {
-                                
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.white)
-                                        .frame(width: 50, height: 50, alignment: .center)
-                                    if #available(iOS 14.0, *) {
-                                        Text(conversion.title.prefix(1))
-                                            .foregroundColor(Color.black)
-                                            .textCase(.uppercase)
-                                            .font(.system(size: 17, weight: .heavy))
-                                    } else {
-                                        // Fallback on earlier versions
+                                HStack {
+                                    ZStack { //Create the captial letter in it's bubble
+                                        Circle()
+                                            .fill(Color.white)
+                                            .frame(width: 50, height: 50, alignment: .center)
+                                        if #available(iOS 14.0, *) {
+                                            Text(conversion.title.prefix(1))
+                                                .foregroundColor(Color.black)
+                                                .textCase(.uppercase)
+                                                .font(.system(size: 17, weight: .heavy))
+                                        } else {
+                                            // Fallback on earlier versions
+                                        }
                                     }
-                                }
-                                
-                                VStack (alignment: .leading) {
-                                    Text("\(conversion.title)")
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 17, weight: .heavy))
-                                        .contextMenu {
-                                            Text(String(conversion.baseUnit))
-                                            Section {
-                                                Button(action: {
-                                                    //Share
-                                                }) {
-                                                    HStack {
-                                                        Image(systemName: "square.and.arrow.up")
-                                                        Spacer()
-                                                        Text("Share")
+                                    
+                                    VStack (alignment: .leading) { //Title and base unit name
+                                        Text("\(conversion.title)")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 17, weight: .heavy))
+                                            .contextMenu {
+                                                Text(String(conversion.baseUnit))
+                                                Section {
+                                                    Button(action: {
+                                                        //Share
+                                                    }) {
+                                                        HStack {
+                                                            Image(systemName: "square.and.arrow.up")
+                                                            Spacer()
+                                                            Text("Share")
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    Text(conversion.baseUnit)
-                                        .font(.caption)
+                                        Text(conversion.baseUnit)
+                                            .font(.caption)
+                                    }
+                                    Spacer()
+                                    Text("Unit acromyn")
+                                        .font(.body)
                                 }
-                                Spacer()
                             }
-                            
                         }
                         .padding()
                         .background(Color.blue)
@@ -75,6 +77,7 @@ struct PersonalView: View {
                     .onMove(perform: move)
                     .onDelete(perform: delete)
                 }
+                .listStyle(PlainListStyle())
                 .navigationBarTitle("Personal Conversions")
                 .navigationBarItems(
                     leading: EditButton(),
@@ -144,7 +147,9 @@ struct Placeholder: View {
 }
 
 struct PersonalView_Previews: PreviewProvider {
+    static let personal = Personal()
+    
     static var previews: some View {
-        PersonalView().environmentObject(Personal())
+        PersonalView().environmentObject(personal)
     }
 }
