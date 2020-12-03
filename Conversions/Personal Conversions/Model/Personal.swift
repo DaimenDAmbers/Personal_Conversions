@@ -26,6 +26,17 @@ enum Operations: String, CaseIterable, Equatable {
     case multiply = "multiplication"
 }
 
+enum Colors: String, CaseIterable, Equatable {
+    case red = "red"
+    case blue = "blue"
+    case green = "green"
+    case purple = "purple"
+    case orange = "orange"
+    case yellow = "yellow"
+    
+    var localizedName: LocalizedStringKey { LocalizedStringKey(rawValue) }
+}
+
 // MARK: Protocols
 protocol Conv_Protocol {
     var conversion: [Conversion] { get set }
@@ -54,11 +65,15 @@ struct Conversion: Identifiable {
     var baseUnit: String // Name of the unit we are converting from
     var baseUnitValue: Float = 1.00 // Base unit that will be used universally for the subconversions
     var subConversions: [SubConversion]
+    var color: Color   // Color of the background of the Conversion
+    var acronym: String // Acronym of the unit conversion
     
-    init(title: String, baseUnit: String, subConversions: [SubConversion]) {
+    init(title: String, baseUnit: String, subConversions: [SubConversion], color: Color, acronym: String) {
         self.title = title
         self.baseUnit = baseUnit
         self.subConversions = subConversions
+        self.color = color
+        self.acronym = acronym
     }
     
     func unitConverter(input: Float?, subConversion: SubConversion) -> Float {

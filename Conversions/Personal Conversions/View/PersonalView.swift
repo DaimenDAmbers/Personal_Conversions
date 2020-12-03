@@ -64,13 +64,15 @@ struct PersonalView: View {
                                             .font(.caption)
                                     }
                                     Spacer()
-                                    Text("Unit acromyn")
+                                    Text(conversion.acronym)
                                         .font(.body)
                                 }
                             }
                         }
+                        
                         .padding()
-                        .background(Color.blue)
+                        .listRowBackground(conversion.color)
+//                        .background(conversion.color)
                         .cornerRadius(8)
                         .shadow(radius: 8)
                     }

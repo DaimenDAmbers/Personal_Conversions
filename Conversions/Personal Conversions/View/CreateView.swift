@@ -18,6 +18,8 @@ struct CreateView: View {
     @State private var subUnitName = String()
     @State private var factor = Float()
     @State private var text = String()
+    @State private var color = Color.white
+    @State private var acronym = String()
     
     @State private var subConversions: [Conversion.SubConversion]? = nil
     
@@ -29,15 +31,38 @@ struct CreateView: View {
             Form {
                 
                 // MARK: Conversion Name
-                Section {
-                    TextField("Conversion name", text: $title)
-                        .disableAutocorrection(true)
+                Section(header: Text("Name and color of the Conversions")) {
+                    HStack {
+                        TextField("Conversion name", text: $title)
+                            .disableAutocorrection(true)
+                        if #available(iOS 14.0, *) {
+                            ColorPicker("Pick Color", selection: $color)
+                                .labelsHidden()
+                        } else {
+                            // Fallback on earlier versions
+                            Picker("Set the background color", selection: $color) {
+                                ForEach(Colors.allCases, id: \.self) { color in
+                                    Text(color.localizedName)
+                                        .tag(color)
+                                }
+                            }
+                        }
+                        
+                    }
+                    
                 }
                 
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
-                    TextField("Meters, Kilograms, etc.", text: $baseUnit)
-                        .disableAutocorrection(true)
+                    HStack {
+                        TextField("Meters, Kilograms, etc.", text: $baseUnit)
+                            .disableAutocorrection(true)
+//                            .frame(width: 245, height: 20, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        Divider()
+                        TextField("Acronym", text: $acronym)
+                            .disableAutocorrection(true)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
                 
                 // MARK: - Convert to values
@@ -89,15 +114,12 @@ struct CreateView: View {
                                 HStack(alignment: .center) {
                                     TextField("Value Name", text: $subUnitName)
                                         .multilineTextAlignment(.center)
-
                                     Divider()
-//                                    TextField("Factor", value: $factor, formatter: NumberFormatter())
-//                                        .multilineTextAlignment(.center)
-//                                        .keyboardType(.decimalPad)
+                                    
                                     DecimalKeypad("0.0", textColor: UIColor.white, fontSize: 17, text: $factor)
-//                                        .multilineTextAlignment(.center)
                                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                                     Divider()
+                                    
                                     HStack {
                                         Button(action: {
                                             self.submit(name: self.subUnitName, factor: self.factor)
@@ -139,7 +161,7 @@ struct CreateView: View {
         guard let subConversions = self.subConversions else {
             return
         }
-        let conversion = Conversion(title: self.title, baseUnit: self.baseUnit, subConversions: subConversions)
+        let conversion = Conversion(title: self.title, baseUnit: self.baseUnit, subConversions: subConversions, color: self.color, acronym: self.acronym)
         self.personal.create(conversion)
         print(conversion.subConversions[0].factor)
         print("Save Form")
