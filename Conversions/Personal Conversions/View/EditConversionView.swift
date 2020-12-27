@@ -116,6 +116,7 @@ struct EditConversionView: View {
 
 struct EditConversionView_Previews: PreviewProvider {
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2.00)], color: Color.red, acronym: "kg")))
+        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2.00)], color: Color.red, acronym: "kg", acronymTextColor: Color.white)))
     }
 }
+

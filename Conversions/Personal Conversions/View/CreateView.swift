@@ -20,6 +20,7 @@ struct CreateView: View {
     @State private var text = String()
     @State private var color = Color.white
     @State private var acronym = String()
+    @State private var acronymTextColor = Color.black
     
     @State private var subConversions: [Conversion.SubConversion]? = nil
     
@@ -40,7 +41,7 @@ struct CreateView: View {
                                 .labelsHidden()
                         } else {
                             // Fallback on earlier versions
-                            Picker("Set the background color", selection: $color) {
+                            Picker("background color", selection: $color) {
                                 ForEach(Colors.allCases, id: \.self) { color in
                                     Text(color.localizedName)
                                         .tag(color)
@@ -55,13 +56,26 @@ struct CreateView: View {
                 // MARK: - Conversion Unit
                 Section(header: Text("What value are you converting from?")) {
                     HStack {
-                        TextField("Meters, Kilograms, etc.", text: $baseUnit)
+                        TextField("Value Name", text: $baseUnit)
                             .disableAutocorrection(true)
-//                            .frame(width: 245, height: 20, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                            .multilineTextAlignment(.leading)
                         Divider()
                         TextField("Acronym", text: $acronym)
                             .disableAutocorrection(true)
-                            .multilineTextAlignment(.trailing)
+                            .multilineTextAlignment(.center)
+                        
+                        if #available(iOS 14.0, *) {
+                            ColorPicker("Pick Color", selection: $acronymTextColor)
+                                .labelsHidden()
+                        } else {
+                            // Fallback on earlier versions
+                            Picker("Color", selection: $acronymTextColor) {
+                                ForEach(Colors.allCases, id: \.self) { color in
+                                    Text(color.localizedName)
+                                        .tag(color)
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -80,7 +94,7 @@ struct CreateView: View {
                 ) {
                     
                     // MARK: List of Sub Conversions
-                    Group {
+//                    Group {
                         
                         List {
                             if let conversions = subConversions {
@@ -94,7 +108,7 @@ struct CreateView: View {
                                 }
                                 .onDelete(perform: delete)
                                 
-                            } else {
+                            } else { //Should change this to have the statements below with an else if.
                                 EmptyView()
                             }
                             
@@ -111,28 +125,45 @@ struct CreateView: View {
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
                             } else {
-                                HStack(alignment: .center) {
-                                    TextField("Value Name", text: $subUnitName)
-                                        .multilineTextAlignment(.center)
-                                    Divider()
-                                    
-                                    DecimalKeypad("0.0", textColor: UIColor.white, fontSize: 17, text: $factor)
-                                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                                    Divider()
-                                    
+//                                VStack {
+                                    HStack(alignment: .center) {
+                                        TextField("Value Name", text: $subUnitName)
+                                            .tag("0")
+                                            .multilineTextAlignment(.center)
+                                        Divider()
+                                        
+                                        DecimalKeypad("0.0", fontSize: 17, text: $factor)
+                                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                        
+                                        
+                                    }
                                     HStack {
+                                        Spacer()
+                                        Button(action: {
+                                            self.cancelRow()
+                                        }) {
+                                            Text("Cancel")
+                                                .foregroundColor(.red)
+                                        }
+                                        .multilineTextAlignment(.center)
+                                        .buttonStyle(BorderlessButtonStyle())
+                                        
+                                        Spacer()
+                                        
                                         Button(action: {
                                             self.submit(name: self.subUnitName, factor: self.factor)
                                         }) {
                                             Text("Submit")
+                                                .fontWeight(.bold)
                                         }
                                         .multilineTextAlignment(.center)
                                         .buttonStyle(BorderlessButtonStyle())
+                                        Spacer()
                                     }
-                                }
+//                                }
                             }
                         }
-                    }
+//                    }
                 }
             }
             .navigationBarTitle(Text("New Conversion"), displayMode: .inline)
@@ -155,13 +186,20 @@ struct CreateView: View {
         print("Cancel Form")
     }
     
+    /// Deletes the row and returns the row to preivous state.
+    private func cancelRow() {
+        self.subUnitName = ""
+        self.factor = 1
+        self.showAddField = true
+    }
+    
     
     /// Saves the form and dismisses CreateView modal
     private func saveForm() {
         guard let subConversions = self.subConversions else {
             return
         }
-        let conversion = Conversion(title: self.title, baseUnit: self.baseUnit, subConversions: subConversions, color: self.color, acronym: self.acronym)
+        let conversion = Conversion(title: self.title, baseUnit: self.baseUnit, subConversions: subConversions, color: self.color, acronym: self.acronym, acronymTextColor: self.acronymTextColor)
         self.personal.create(conversion)
         print(conversion.subConversions[0].factor)
         print("Save Form")

@@ -22,20 +22,22 @@ struct DetailView: View {
     var body: some View {
         VStack {
             VStack {
-                DecimalKeypad("0.0", textColor: UIColor.green, fontSize: 50, text: $userInput)
+                DecimalKeypad("0.0", fontSize: 50, text: $userInput)
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                 
                 Text(conversion.baseUnit)
                     .font(.title)
                     .foregroundColor(.white)
+                    .background(conversion.color)
                 
                 ConvsersionListView(subConversions: conversion.subConversions, userInput: userInput)
             }
+            
         }
         .sheet(isPresented: $showingEditModal) {
             EditConversionView(conversion: self.$conversion)
         }
-        .background(conversion.color)
+        
         
         .navigationBarTitle(Text("\(conversion.title)"), displayMode: .inline)
         .navigationBarItems(trailing:
@@ -115,6 +117,6 @@ struct ConvsersionListView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailView(conversion: Conversion(title: "Distance", baseUnit: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor:   2.00)], color: Color.red, acronym: "kg"))
+        DetailView(conversion: Conversion(title: "Distance", baseUnit: "Feet", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor:   2.00)], color: Color.red, acronym: "kg", acronymTextColor: Color.white))
     }
 }

@@ -67,13 +67,15 @@ struct Conversion: Identifiable {
     var subConversions: [SubConversion]
     var color: Color   // Color of the background of the Conversion
     var acronym: String // Acronym of the unit conversion
+    var acronymTextColor: Color
     
-    init(title: String, baseUnit: String, subConversions: [SubConversion], color: Color, acronym: String) {
+    init(title: String, baseUnit: String, subConversions: [SubConversion], color: Color, acronym: String, acronymTextColor: Color) {
         self.title = title
         self.baseUnit = baseUnit
         self.subConversions = subConversions
         self.color = color
         self.acronym = acronym
+        self.acronymTextColor = acronymTextColor
     }
     
     func unitConverter(input: Float?, subConversion: SubConversion) -> Float {
@@ -112,6 +114,22 @@ struct Conversion: Identifiable {
         
         self.title = title
         self.baseUnit = baseUnit
+    }
+    
+    mutating func getAcronymColor(color: UIColor) {
+        if (!color.isLight) {
+            acronymTextColor = Color.white
+        } else {
+            acronymTextColor = Color.black
+        }
+    }
+}
+
+extension UIColor {
+    var isLight: Bool {
+        var white: CGFloat = 0
+        getWhite(&white, alpha: nil)
+        return white > 0.5
     }
 }
 

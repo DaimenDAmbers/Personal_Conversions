@@ -28,23 +28,16 @@ struct PersonalView: View {
                         HStack {
                             NavigationLink(destination: DetailView(conversion: conversion)) {
                                 HStack {
-                                    ZStack { //Create the captial letter in it's bubble
+                                    ZStack { // Create the captial letter in it's bubble
                                         Circle()
-                                            .fill(Color.white)
+                                            .fill(conversion.color)
                                             .frame(width: 50, height: 50, alignment: .center)
-                                        if #available(iOS 14.0, *) {
-                                            Text(conversion.title.prefix(1))
-                                                .foregroundColor(Color.black)
-                                                .textCase(.uppercase)
-                                                .font(.system(size: 17, weight: .heavy))
-                                        } else {
-                                            // Fallback on earlier versions
-                                        }
+                                        Text(conversion.acronym)
+                                            .foregroundColor(conversion.acronymTextColor)
                                     }
                                     
                                     VStack (alignment: .leading) { //Title and base unit name
                                         Text("\(conversion.title)")
-                                            .foregroundColor(.white)
                                             .font(.system(size: 17, weight: .heavy))
                                             .contextMenu {
                                                 Text(String(conversion.baseUnit))
@@ -63,15 +56,12 @@ struct PersonalView: View {
                                         Text(conversion.baseUnit)
                                             .font(.caption)
                                     }
-                                    Spacer()
-                                    Text(conversion.acronym)
-                                        .font(.body)
                                 }
                             }
                         }
                         
                         .padding()
-                        .listRowBackground(conversion.color)
+//                        .listRowBackground(conversion.color)
 //                        .background(conversion.color)
                         .cornerRadius(8)
                         .shadow(radius: 8)

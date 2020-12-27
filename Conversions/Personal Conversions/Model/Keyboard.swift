@@ -13,12 +13,10 @@ import SwiftUI
 struct DecimalKeypad: UIViewRepresentable {
     @Binding var factor: Float
     private var placeHolder: String
-    private var textColor: UIColor
     private var fontSize: CGFloat
     
-    init(_ placeHolder: String, textColor: UIColor, fontSize: CGFloat, text: Binding<Float>) {
+    init(_ placeHolder: String, fontSize: CGFloat, text: Binding<Float>) {
         self.placeHolder = placeHolder
-        self.textColor = textColor
         self.fontSize = fontSize
         self._factor = text
     }
@@ -29,7 +27,12 @@ struct DecimalKeypad: UIViewRepresentable {
         textfield.keyboardType = .decimalPad
         textfield.placeholder = placeHolder
         textfield.textAlignment = .center
-        textfield.textColor = textColor
+//        textfield.textColor = textColor
+        if #available(iOS 14.0, *) {
+            textfield.textColor = UIColor(Color("TextColor"))
+        } else {
+            // Fallback on earlier versions
+        }
         textfield.font = .systemFont(ofSize: fontSize, weight: .bold)
         
         textfield.delegate = context.coordinator
