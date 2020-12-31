@@ -232,8 +232,8 @@ struct CreateView: View {
             self.subConversions?.append(Conversion.SubConversion(subUnitName: self.subUnitName, factor: factor))
         }
         
-        self.subUnitName = ""
-        self.factor = 1
+        self.subUnitName = String()
+        self.factor = Float()
         self.showAddField = true
     }
 }
