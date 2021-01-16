@@ -45,7 +45,7 @@ protocol Conv_Protocol {
 
 // MARK: Structs
 /// Ouline of a Conversion
-struct Conversion: Identifiable {
+class Conversion: Identifiable {
     
     /// Create multiple conversions that is converted from the unit.
     struct SubConversion: Identifiable {
@@ -92,7 +92,7 @@ struct Conversion: Identifiable {
         return output
     }
 
-    mutating func saveEdits(title: String, baseUnit: String) throws {
+    func saveEdits(title: String, baseUnit: String) throws {
         let emptyString = String()
 //        let zeroFactor: Float = 0
         guard title != emptyString else {
@@ -116,7 +116,7 @@ struct Conversion: Identifiable {
         self.baseUnit = baseUnit
     }
     
-    mutating func getAcronymColor(color: UIColor) {
+    func getAcronymColor(color: UIColor) {
         if (!color.isLight) {
             acronymTextColor = Color.white
         } else {

@@ -10,32 +10,74 @@ import SwiftUI
 
 struct EditConversionView: View {
     @Binding var conversion: Conversion
-    @State private var isEditing: EditMode = .inactive
+    @State private var isEditing: EditMode = .active
     @Environment(\.presentationMode) var showingEditOptions
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Conversion Name")) {
-                    TextField("\(conversion.title)", text: $conversion.title)
+                    HStack {
+                        TextField("\(conversion.title)", text: $conversion.title)
+                        if #available(iOS 14.0, *) {
+                            ColorPicker("Pick Color", selection: $conversion.color)
+                                .labelsHidden()
+                        } else {
+                            // Fallback on earlier versions
+                            Picker("background color", selection: $conversion.color) {
+                                ForEach(Colors.allCases, id: \.self) { color in
+                                    Text(color.localizedName)
+                                        .tag(color)
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 Section(header: Text("Conversion Unit Name")) {
-                    TextField("\(conversion.baseUnit)", text: $conversion.baseUnit)
+                    HStack {
+                        TextField("\(conversion.baseUnit)", text: $conversion.baseUnit)
+                        Divider()
+                        TextField("Acronym", text: $conversion.acronym)
+                            .disableAutocorrection(true)
+                            .multilineTextAlignment(.center)
+                        
+                        if #available(iOS 14.0, *) {
+                            ColorPicker("Pick Color", selection: $conversion.acronymTextColor)
+                                .labelsHidden()
+                        } else {
+                            // Fallback on earlier versions
+                            Picker("Color", selection: $conversion.acronymTextColor) {
+                                ForEach(Colors.allCases, id: \.self) { color in
+                                    Text(color.localizedName)
+                                        .tag(color)
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 Section(header: Text("Conversions")) {
                     List {
                         ForEach(conversion.subConversions.indices, id: \.self) { idx in
                             HStack {
-                                Button(action: {
-                                    // Minus button
-                                    self.isEditing = .active
-                                    print("delete")
-                                }) {
-                                    Image(systemName: "minus.circle.fill")
-                                        .foregroundColor(.red)
-                                }
+//                                Button(action: {
+//                                    // Minus button
+//                                    self.isEditing = .active
+//                                    print("delete")
+//                                }) {
+//                                    Image(systemName: "minus.circle.fill")
+//                                        .foregroundColor(.red)
+//                                }
                                 TextField("\(self.conversion.subConversions[idx].subUnitName)", text: self.$conversion.subConversions[idx].subUnitName)
+                                DecimalKeypad("\(self.conversion.subConversions[idx].factor)", fontSize: 17, text: self.$conversion.subConversions[idx].factor)
+                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+//                                Text(subConversion.subUnitName)
+//                                    .multilineTextAlignment(.center)
+//                                Spacer()
+//                                Divider()
+//                                Spacer()
+//                                Text(String(format: "%.2f", subConversion.factor))
+//                                    .multilineTextAlignment(.center)
                             }
                         }
                         .onDelete(perform: deleteRow)
@@ -46,9 +88,11 @@ struct EditConversionView: View {
                             self.addRow()
                         }) {
                             HStack {
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(.green)
-                                Text("add row")
+                                Spacer()
+//                                Image(systemName: "plus.circle.fill")
+//                                    .foregroundColor(.green)
+                                Text("Add row")
+                                Spacer()
                             }
                         }
                     }
@@ -59,8 +103,8 @@ struct EditConversionView: View {
                 leading: Button("Cancel") { self.cancelEdits() },
                 trailing: Button("Save") { self.saveEdits() }
             )
+            .environment(\.editMode, $isEditing)
         }
-        .keyboardAdaptive()
     }
 
     
@@ -73,7 +117,6 @@ struct EditConversionView: View {
     private func deleteRow(at offsets: IndexSet) {
         self.conversion.subConversions.remove(atOffsets: offsets)
     }
-    
     
     /// Error handler for the submitting the changes to the conversion.
     /// - Parameters:
@@ -115,8 +158,10 @@ struct EditConversionView: View {
 }
 
 struct EditConversionView_Previews: PreviewProvider {
+    static var conversion = Conversion(title: "Conversion", baseUnit: "BaseUnit", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 1), Conversion.SubConversion(subUnitName: "Test2", factor: 2)], color: .black, acronym: "B", acronymTextColor: .white)
+    
     static var previews: some View {
-        EditConversionView(conversion: .constant(Conversion(title: "Test", baseUnit: "Meters", subConversions: [Conversion.SubConversion(subUnitName: "Test", factor: 2.00)], color: Color.red, acronym: "kg", acronymTextColor: Color.white)))
+        EditConversionView(conversion: .constant(conversion))
     }
 }
 

@@ -25,7 +25,7 @@
 		D3BCF5A7246B40DE003EF08A /* Personal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5A6246B40DE003EF08A /* Personal.swift */; };
 		D3BCF5A9246B4150003EF08A /* Universal.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5A8246B4150003EF08A /* Universal.swift */; };
 		D3BCF5AB246B4CAA003EF08A /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BCF5AA246B4CAA003EF08A /* CreateView.swift */; };
-		D3E75C75247DFDD700AF2857 /* Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E75C74247DFDD700AF2857 /* Keyboard.swift */; };
+		D3E75C75247DFDD700AF2857 /* DecimalKeypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E75C74247DFDD700AF2857 /* DecimalKeypad.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,7 @@
 		D3BCF5A6246B40DE003EF08A /* Personal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Personal.swift; sourceTree = "<group>"; };
 		D3BCF5A8246B4150003EF08A /* Universal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Universal.swift; sourceTree = "<group>"; };
 		D3BCF5AA246B4CAA003EF08A /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
-		D3E75C74247DFDD700AF2857 /* Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard.swift; sourceTree = "<group>"; };
+		D3E75C74247DFDD700AF2857 /* DecimalKeypad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalKeypad.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +140,7 @@
 		D3073DDD24678E2E00FB2217 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D3E75C74247DFDD700AF2857 /* Keyboard.swift */,
+				D3E75C74247DFDD700AF2857 /* DecimalKeypad.swift */,
 				D3BCF5A6246B40DE003EF08A /* Personal.swift */,
 			);
 			path = Model;
@@ -317,7 +317,7 @@
 				D3073DBA24678E0200FB2217 /* AppDelegate.swift in Sources */,
 				D3073DBC24678E0200FB2217 /* SceneDelegate.swift in Sources */,
 				D3073DBE24678E0200FB2217 /* ContentView.swift in Sources */,
-				D3E75C75247DFDD700AF2857 /* Keyboard.swift in Sources */,
+				D3E75C75247DFDD700AF2857 /* DecimalKeypad.swift in Sources */,
 				D315166C246B34D000444FAF /* PersonalView.swift in Sources */,
 				D3048233248DCF610045F3B6 /* EditConversionView.swift in Sources */,
 				D315166E246B34E700444FAF /* UniversalView.swift in Sources */,
