@@ -115,14 +115,14 @@ class Conversion: Identifiable {
         self.title = title
         self.baseUnit = baseUnit
     }
-    
-    func getAcronymColor(color: UIColor) {
-        if (!color.isLight) {
-            acronymTextColor = Color.white
-        } else {
-            acronymTextColor = Color.black
-        }
-    }
+
+//    func getAcronymColor(color: UIColor) {
+//        if (!color.isLight) {
+//            acronymTextColor = Color.white
+//        } else {
+//            acronymTextColor = Color.black
+//        }
+//    }
 }
 
 extension UIColor {

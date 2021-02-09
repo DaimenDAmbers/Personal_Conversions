@@ -227,9 +227,9 @@ struct CreateView: View {
         }
         
         if self.subConversions?.isEmpty == nil {
-            self.subConversions = [Conversion.SubConversion(subUnitName: self.subUnitName, factor: self.factor)]
+            self.subConversions = [Conversion.SubConversion(subUnitName: name, factor: factor)]
         } else {
-            self.subConversions?.append(Conversion.SubConversion(subUnitName: self.subUnitName, factor: factor))
+            self.subConversions?.append(Conversion.SubConversion(subUnitName: name, factor: factor))
         }
         
         self.subUnitName = String()
