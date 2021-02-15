@@ -108,7 +108,15 @@ struct EditConversionView: View {
                                 Spacer()
                             }
                             Button(action: {
-                                submitRow(subUnitName: self.newEntry, factor: self.newFactor)
+                                do {
+                                    try submitRow(subUnitName: self.newEntry, factor: self.newFactor)
+                                } catch ConversionError.emptyValueName {
+                                    print("ERROR: Empty Conversion Value Name")
+                                } catch ConversionError.zerofactor {
+                                    print("ERROR: Cannot have a factor of zero")
+                                } catch {
+                                    print("Unexpected error: \(error)")
+                                }
                             }) {
                                 HStack {
                                     Spacer()
@@ -145,13 +153,11 @@ struct EditConversionView: View {
     private func submitRow(subUnitName: String, factor: Float) throws {
 //        self.conversion.subConversions.append(Conversion.SubConversion(subUnitName: "", factor: 1.00))
         guard subUnitName != String() else {
-            throw ConversionError.emptyUnitName
-//            print("Empty sub conversion name")
+            throw ConversionError.emptyValueName
         }
         
         guard factor != 0 else {
-            print("Can't use zero")
-            return
+            throw ConversionError.zerofactor
         }
         
         if self.extraSubConversions?.isEmpty == nil {
