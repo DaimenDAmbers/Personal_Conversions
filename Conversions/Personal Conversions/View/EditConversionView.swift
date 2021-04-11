@@ -24,18 +24,7 @@ struct EditConversionView: View {
                 Section(header: Text("Conversion Name")) {
                     HStack {
                         TextField("\(conversion.title)", text: $conversion.title)
-                        if #available(iOS 14.0, *) {
-                            ColorPicker("Pick Color", selection: $conversion.color)
-                                .labelsHidden()
-                        } else {
-                            // Fallback on earlier versions
-                            Picker("background color", selection: $conversion.color) {
-                                ForEach(Colors.allCases, id: \.self) { color in
-                                    Text(color.localizedName)
-                                        .tag(color)
-                                }
-                            }
-                        }
+                       
                     }
                 }
                 
@@ -47,28 +36,19 @@ struct EditConversionView: View {
                             .disableAutocorrection(true)
                             .multilineTextAlignment(.center)
                         
-                        if #available(iOS 14.0, *) {
-                            ColorPicker("Pick Color", selection: $conversion.acronymTextColor)
-                                .labelsHidden()
-                        } else {
-                            // Fallback on earlier versions
-                            Picker("Color", selection: $conversion.acronymTextColor) {
-                                ForEach(Colors.allCases, id: \.self) { color in
-                                    Text(color.localizedName)
-                                        .tag(color)
-                                }
-                            }
-                        }
                     }
                 }
                 
                 Section(header: Text("Conversions")) {
                     List {
-                        ForEach(conversion.subConversions.indices, id: \.self) { idx in
+                        ForEach(conversion.subConversions) { subconversion in
                             HStack {
-                                TextField("\(self.conversion.subConversions[idx].subUnitName)", text: self.$conversion.subConversions[idx].subUnitName)
-                                DecimalKeypad("\(self.conversion.subConversions[idx].factor)", fontSize: 17, text: self.$conversion.subConversions[idx].factor)
-                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                Text(subconversion.subUnitName)
+                                Spacer()
+                                Text(String(subconversion.factor))
+//                                TextField("\(self.conversion.subConversions[idx].subUnitName)", text: self.$conversion.subConversions[idx].subUnitName)
+//                                DecimalKeypad("\(self.conversion.subConversions[idx].factor)", fontSize: 17, text: self.$conversion.subConversions[idx].factor)
+//                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
                             }
                         }
                         .onDelete(perform: deleteRow)
@@ -129,6 +109,33 @@ struct EditConversionView: View {
                     }
                     
                     
+                }
+                
+                Section(header: Text("Acronym Color")) {
+                    if #available(iOS 14.0, *) {
+                        ColorPicker("Background Color", selection: $conversion.color)
+//                            .labelsHidden()
+                    } else {
+                        // Fallback on earlier versions
+                        Picker("background Color", selection: $conversion.color) {
+                            ForEach(Colors.allCases, id: \.self) { color in
+                                Text(color.localizedName)
+                                    .tag(color)
+                            }
+                        }
+                    }
+                    if #available(iOS 14.0, *) {
+                        ColorPicker("Forground Color", selection: $conversion.acronymTextColor)
+//                            .labelsHidden()
+                    } else {
+                        // Fallback on earlier versions
+                        Picker("Forground Color", selection: $conversion.acronymTextColor) {
+                            ForEach(Colors.allCases, id: \.self) { color in
+                                Text(color.localizedName)
+//                                    .tag(color)
+                            }
+                        }
+                    }
                 }
             }
             .navigationBarTitle("Edit Conversion", displayMode: .inline)

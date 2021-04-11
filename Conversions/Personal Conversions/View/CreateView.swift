@@ -36,19 +36,6 @@ struct CreateView: View {
                     HStack {
                         TextField("Conversion name", text: $title)
                             .disableAutocorrection(true)
-                        if #available(iOS 14.0, *) {
-                            ColorPicker("Pick Color", selection: $color)
-                                .labelsHidden()
-                        } else {
-                            // Fallback on earlier versions
-                            Picker("background color", selection: $color) {
-                                ForEach(Colors.allCases, id: \.self) { color in
-                                    Text(color.localizedName)
-                                        .tag(color)
-                                }
-                            }
-                        }
-                        
                     }
                     
                 }
@@ -62,20 +49,8 @@ struct CreateView: View {
                         Divider()
                         TextField("Acronym", text: $acronym)
                             .disableAutocorrection(true)
+                            .autocapitalization(.none)
                             .multilineTextAlignment(.center)
-                        
-                        if #available(iOS 14.0, *) {
-                            ColorPicker("Pick Color", selection: $acronymTextColor)
-                                .labelsHidden()
-                        } else {
-                            // Fallback on earlier versions
-                            Picker("Color", selection: $acronymTextColor) {
-                                ForEach(Colors.allCases, id: \.self) { color in
-                                    Text(color.localizedName)
-                                        .tag(color)
-                                }
-                            }
-                        }
                     }
                 }
                 
@@ -94,8 +69,6 @@ struct CreateView: View {
                 ) {
                     
                     // MARK: List of Sub Conversions
-//                    Group {
-                        
                         List {
                             if let conversions = subConversions {
                                 ForEach(conversions, id: \.id) { subConversion in
@@ -125,7 +98,6 @@ struct CreateView: View {
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
                             } else {
-//                                VStack {
                                     HStack(alignment: .center) {
                                         TextField("Value Name", text: $subUnitName)
                                             .tag("0")
@@ -134,8 +106,6 @@ struct CreateView: View {
                                         
                                         DecimalKeypad("0.0", fontSize: 17, text: $factor)
                                             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                                        
-                                        
                                     }
                                     HStack {
                                         Spacer()
@@ -160,10 +130,33 @@ struct CreateView: View {
                                         .buttonStyle(BorderlessButtonStyle())
                                         Spacer()
                                     }
-//                                }
                             }
                         }
-//                    }
+
+                }
+                
+                Section(header: Text("Acronym Color")) {
+                    if #available(iOS 14.0, *) {
+                        ColorPicker("Background Color", selection: $color)
+                    } else {
+                        // Fallback on earlier versions
+                        Picker("background Color", selection: $color) {
+                            ForEach(Colors.allCases, id: \.self) { color in
+                                Text(color.localizedName)
+                                    .tag(color)
+                            }
+                        }
+                    }
+                    if #available(iOS 14.0, *) {
+                        ColorPicker("Forground Color", selection: $acronymTextColor)
+                    } else {
+                        // Fallback on earlier versions
+                        Picker("Forground Color", selection: $acronymTextColor) {
+                            ForEach(Colors.allCases, id: \.self) { color in
+                                Text(color.localizedName)
+                            }
+                        }
+                    }
                 }
             }
             .navigationBarTitle(Text("New Conversion"), displayMode: .inline)
@@ -214,7 +207,7 @@ struct CreateView: View {
     /// Submits the new sub conversion value
     /// - Parameters:
     ///   - name: Name of the sub converions.
-    ///   - factor: how many of this item will make one of the value you are converting from.
+    ///   - factor: The conversion factor of how many of this item will make one of the value you are converting from.
     private func submit(name: String, factor: Float) {
         guard name != String() else {
             print("Empty sub conversion name")
